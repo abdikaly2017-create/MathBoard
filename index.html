@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MathBoard — Басты бет</title>
+  <style>
+    :root{
+      --bg:#070A12; --bg2:#0B1020;
+      --card: rgba(255,255,255,.06);
+      --border: rgba(255,255,255,.12);
+      --text:#EAF0FF; --muted: rgba(234,240,255,.72);
+      --radius:18px; --shadow: 0 18px 60px rgba(0,0,0,.38);
+      --accent1:#22d3ee; --accent2:#7c3aed; --accent3:#f472b6;
+      --slide-w:320px;
+    }
+    body[data-theme="day"]{
+      --bg:#F6FBFF; --bg2:#FFF6FB;
+      --card: rgba(255,255,255,.94);
+      --border: rgba(17,24,39,.08);
+      --text:#07101f; --muted: rgba(11,18,32,.64);
+      --shadow: 0 18px 60px rgba(37,99,235,.08);
+    }
+
+    *{box-sizing:border-box;}
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;}
+    body{
+      color:var(--text);
+      background:
+        radial-gradient(1000px 600px at 8% 12%, rgba(34,211,238,.12), transparent 55%),
+        radial-gradient(800px 500px at 86% 20%, rgba(124,58,237,.10), transparent 50%),
+        linear-gradient(180deg,var(--bg),var(--bg2));
+      transition: background .22s ease, color .22s ease;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    .container{max-width:1280px;margin:18px auto;padding:18px;position:relative;z-index:2;}
+    header{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:12px;background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow);backdrop-filter:blur(8px);}
+    .brand{display:flex;gap:12px;align-items:center;}
+    .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:grid;place-items:center;font-weight:900;color:#06101f;}
+    .brand h1{margin:0;font-size:18px;}
+    .brand p{margin:2px 0 0;color:var(--muted);font-size:13px;}
+    .top-actions{display:flex;gap:10px;align-items:center;}
+    .btn{padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);cursor:pointer;font-weight:800;}
+    .btn.primary{background:linear-gradient(135deg,var(--accent1),var(--accent2));border:0;color:#07101f;}
+
+    .hero{margin-top:16px;padding:20px;border-radius:14px;background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow);text-align:center;position:relative;overflow:hidden;}
+    .wideTitle{font-size:30px;font-weight:900;background:linear-gradient(90deg,var(--accent1),var(--accent2),var(--accent3));-webkit-background-clip:text;background-clip:text;color:transparent;margin:0;}
+    .wideSubtitle{margin-top:8px;color:var(--muted);max-width:980px;margin-left:auto;margin-right:auto;font-size:14px;}
+
+    /* QUICK NAV (carousel) */
+    .quickNavWrap{margin-top:18px;display:flex;gap:12px;align-items:center;justify-content:center;}
+    .navBtn{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:10px;cursor:pointer;display:inline-grid;place-items:center;width:44px;height:44px;}
+    .slideViewport{overflow:hidden;border-radius:12px;border:1px solid var(--border);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;align-items:center;width:calc(100% - 120px);max-width:980px;}
+    .slideRow{display:flex;gap:12px;padding:12px;transition:transform 320ms cubic-bezier(.2,.8,.2,1);will-change:transform;}
+    .slide{flex:0 0 var(--slide-w);min-width:var(--slide-w);border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);padding:14px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 8px 26px rgba(0,0,0,.12);text-decoration:none;color:inherit;}
+    .slide .ico{width:56px;height:56px;border-radius:10px;display:grid;place-items:center;font-weight:900;color:#06101f;background:linear-gradient(135deg,var(--accent1),var(--accent2));flex-shrink:0;}
+    .slide .txt{display:flex;flex-direction:column;gap:6px;}
+    .slide .t{font-size:15px;font-weight:900;line-height:1.05;word-break:break-word;}
+    .slide .d{font-size:13px;color:var(--muted);line-height:1.25;white-space:normal;}
+    @media(max-width:880px){:root{--slide-w:260px;} .slideViewport{width:calc(100% - 100px);} }
+    @media(max-width:600px){:root{--slide-w:240px;} .slideViewport{width:calc(100% - 80px);} }
+
+    /* Layout: left formulas, center board, right formulas */
+    .layout{display:grid;grid-template-columns:260px 1fr 260px;gap:14px;margin-top:18px;align-items:start;position:relative;z-index:3;}
+    @media(max-width:1100px){.layout{grid-template-columns:1fr;}}
+
+    .panel{padding:14px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);box-shadow:var(--shadow);min-height:160px;}
+    .panel h3{margin:0 0 10px;}
+    .form-list{display:flex;flex-direction:column;gap:10px;max-height:520px;overflow:auto;padding-right:6px;}
+    .form-item{display:flex;flex-direction:column;padding:10px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);}
+    .form-item .title{font-weight:900;font-size:13px;margin-bottom:6px;}
+    .form-item .expr{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-weight:800;font-size:15px;color:var(--accent1);}
+    .form-item .desc{font-size:12px;color:var(--muted);margin-top:6px;}
+
+    .boardWrap{padding:14px;border-radius:12px;background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow);}
+    .boardHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+    .tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+    .tool{padding:8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,0.03);color:var(--text);font-size:13px;}
+    canvas{width:100%;height:420px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px solid var(--border);}
+
+    /* Games row under board */
+    .gamesRow{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px;}
+    .gcard{padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.02));border:1px solid var(--border);display:flex;flex-direction:column;gap:10px;min-height:110px;}
+    .gcard .head{display:flex;gap:10px;align-items:center;}
+    .gcard .ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-weight:900;color:#06101f;background:linear-gradient(135deg,var(--accent1),var(--accent2));}
+
+    /* Decorative background for formulas/games: soft shapes */
+    .bg-decor{
+      position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.28;
+      background-image:
+        radial-gradient(600px 250px at 6% 15%, rgba(34,211,238,.06), transparent 40%),
+        radial-gradient(450px 220px at 92% 20%, rgba(124,58,237,.06), transparent 40%),
+        radial-gradient(300px 160px at 50% 85%, rgba(244,114,182,.04), transparent 40%);
+      mix-blend-mode:screen;
+    }
+
+    /* scroll styling */
+    .form-list::-webkit-scrollbar{width:8px;}
+    .form-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:6px;}
+
+    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px;}
+  </style>
+</head>
+<body data-theme="night">
+  <div class="bg-decor" aria-hidden="true"></div>
+
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">∑</div>
+        <div>
+          <h1>MathBoard</h1>
+          <p>8–9 сынып • тақырыптар • онлайн тақта • ойындар</p>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <button id="themeBtn" class="btn">🌙 Түн</button>
+        <a class="btn" href="olympiad.html">Олимпиада</a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div>
+        <div class="wideTitle">Математика — ойлаудың тілі</div>
+        <div class="wideSubtitle">Мақсат: есепті түсініп, дәлелдеу және бірнеше тәсілмен шығару дағдыларын дамыту.</div>
+      </div>
+
+      <!-- QUICK NAV: arrows + viewport -->
+      <div class="quickNavWrap" style="margin-top:18px;">
+        <button class="navBtn" id="prevBtn" aria-label="Алдыңғы">&#8592;</button>
+
+        <div class="slideViewport" id="viewport">
+          <div class="slideRow" id="slideRow">
+            <a class="slide" href="arithm_prog.html">
+              <div class="ico" style="background:linear-gradient(135deg,#22d3ee,#60a5fa)">АП</div>
+              <div class="txt"><div class="t">Арифметикалық прогрессия</div><div class="d">aₙ = a₁ + (n−1)d · Sₙ = (n/2)(2a₁+(n−1)d)</div></div>
+            </a>
+
+            <a class="slide" href="geom_prog.html">
+              <div class="ico" style="background:linear-gradient(135deg,#a78bfa,#f472b6)">ГП</div>
+              <div class="txt"><div class="t">Геометриялық прогрессия</div><div class="d">bₙ = b₁·qⁿ⁻¹ · Sₙ = b₁*(qⁿ−1)/(q−1)</div></div>
+            </a>
+
+            <a class="slide" href="geometry_plane.html">
+              <div class="ico" style="background:linear-gradient(135deg,#34d399,#22d3ee)">△</div>
+              <div class="txt"><div class="t">Геометрия (планиметрия)</div><div class="d">S = ½ a·h · Шеңбер: S=πr², C=2πr</div></div>
+            </a>
+
+            <a class="slide" href="combinatorics.html">
+              <div class="ico" style="background:linear-gradient(135deg,#fbbf24,#fb7185)">C</div>
+              <div class="txt"><div class="t">Комбинаторика</div><div class="d">C(n,k)=n!/(k!(n−k)!) — таңдау</div></div>
+            </a>
+
+            <a class="slide" href="trig.html">
+              <div class="ico" style="background:linear-gradient(135deg,#60a5fa,#a78bfa)">sin</div>
+              <div class="txt"><div class="t">Тригонометрия</div><div class="d">sin²x+cos²x=1 · градус/радиан түрлендіру</div></div>
+            </a>
+
+            <a class="slide" href="functions.html">
+              <div class="ico" style="background:linear-gradient(135deg,#34d399,#fbbf24)">f(x)</div>
+              <div class="txt"><div class="t">Функциялар</div><div class="d">y=kx+b, y=ax²+bx+c, y=a/x — графиктер</div></div>
+            </a>
+
+            <a class="slide" href="olympiad.html">
+              <div class="ico" style="background:linear-gradient(135deg,#fb7185,#f472b6)">★</div>
+              <div class="txt"><div class="t">Олимпиада есептері</div><div class="d">20 есеп — көп тәсілді шешулер</div></div>
+            </a>
+
+            <a class="slide" href="math_literacy.html">
+              <div class="ico" style="background:linear-gradient(135deg,#22d3ee,#34d399)">ML</div>
+              <div class="txt"><div class="t">Математикалық сауаттылық</div><div class="d">10×4×10 тест жүйесі</div></div>
+            </a>
+          </div>
+        </div>
+
+        <button class="navBtn" id="nextBtn" aria-label="Келесі">&#8594;</button>
+      </div>
+
+      <div style="margin-top:12px;color:var(--muted);font-size:13px;">Слайдтарды көрсеткімен немесе сырғыту арқылы жылжытыңыз</div>
+    </section>
+
+    <!-- MAIN layout with left & right formulas and center board + games -->
+    <section class="layout">
+      <!-- LEFT formulas -->
+      <aside class="panel" aria-label="Формулалар сол жақ">
+        <h3>Негізгі формулалар — 1</h3>
+        <div class="form-list">
+          <div class="form-item">
+            <div class="title">Арифметикалық прогрессия</div>
+            <div class="expr">aₙ = a₁ + (n − 1) d</div>
+            <div class="desc">n-ші мүше</div>
+          </div>
+          <div class="form-item">
+            <div class="title">AP қоспасы</div>
+            <div class="expr">Sₙ = (n/2)(2a₁ + (n−1)d)</div>
+            <div class="desc">Алғашқы n мүшені қосу</div>
+          </div>
+          <div class="form-item">
+            <div class="title">Геометриялық прогрессия</div>
+            <div class="expr">bₙ = b₁ · qⁿ⁻¹</div>
+            <div class="desc">n-ші мүше</div>
+          </div>
+          <div class="form-item">
+            <div class="title">GP қоспасы</div>
+            <div class="expr">Sₙ = b₁·(qⁿ −1)/(q−1)</div>
+            <div class="desc">q ≠ 1</div>
+          </div>
+          <div class="form-item">
+            <div class="title">Квадраттық функция</div>
+            <div class="expr">y = ax² + bx + c</div>
+            <div class="desc">Парабола</div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- CENTER board -->
+      <main class="boardWrap" aria-label="Тақта және ойындар орталығы">
+        <div class="boardHead">
+          <div>
+            <h3 style="margin:0">Онлайн тақта</h3>
+            <div style="color:var(--muted);font-size:13px;margin-top:6px;">Қалам, өшіргіш, сызғыш — тақтада жазып, график сызуға болады.</div>
+          </div>
+          <div class="tools">
+            <div class="tool">Режим:
+              <select id="mode"><option value="pen">Қалам</option><option value="eraser">Өшіргіш</option><option value="line">Сызғыш</option></select>
+            </div>
+            <div class="tool">Қалыңдық: <input id="size" type="range" min="2" max="22" value="4"></div>
+            <div class="tool">Түс: <input id="color" type="color" value="#22d3ee"></div>
+            <div class="tool"><button id="undoBtn">↶ Undo</button></div>
+            <div class="tool"><button id="clearBtn">🧽 Тазалау</button></div>
+          </div>
+        </div>
+
+        <canvas id="canvas"></canvas>
+
+        <!-- games restored under board -->
+        <div class="gamesRow" aria-label="Ойындар">
+          <div class="gcard">
+            <div class="head"><div class="ico" style="background:linear-gradient(135deg,#22d3ee,#60a5fa)">Ф</div>
+              <div><b>Formula Sprint</b><div style="font-size:13px;color:var(--muted)">Формулаларды жылдам тану</div></div>
+            </div>
+            <div style="margin-top:auto;display:flex;gap:8px;"><a class="btn primary" href="formula_sprint.html">Бастау</a><a class="btn" href="formula_sprint.html">Ашу</a></div>
+          </div>
+
+          <div class="gcard">
+            <div class="head"><div class="ico" style="background:linear-gradient(135deg,#60a5fa,#a78bfa)">М</div>
+              <div><b>Match: Формула ↔ Атауы</b><div style="font-size:13px;color:var(--muted)">Сәйкестендіру</div></div>
+            </div>
+            <div style="margin-top:auto;display:flex;gap:8px;"><a class="btn primary" href="match_formula.html">Бастау</a><a class="btn" href="match_formula.html">Ашу</a></div>
+          </div>
+
+          <div class="gcard">
+            <div class="head"><div class="ico" style="background:linear-gradient(135deg,#fb7185,#f472b6)">Q</div>
+              <div><b>AP/GP Quest</b><div style="font-size:13px;color:var(--muted)">Прогрессия есептер</div></div>
+            </div>
+            <div style="margin-top:auto;display:flex;gap:8px;"><a class="btn primary" href="apgp_quest.html">Бастау</a><a class="btn" href="apgp_quest.html">Ашу</a></div>
+          </div>
+        </div>
+      </main>
+
+      <!-- RIGHT formulas -->
+      <aside class="panel" aria-label="Формулалар оң жақ">
+        <h3>Негізгі формулалар — 2</h3>
+        <div class="form-list">
+          <div class="form-item">
+            <div class="title">Үшбұрыш ауданы</div>
+            <div class="expr">S = ½ · a · h</div>
+            <div class="desc">Қабырға мен биіктіктен</div>
+          </div>
+          <div class="form-item">
+            <div class="title">Шеңбер</div>
+            <div class="expr">S = π r² · C = 2π r</div>
+            <div class="desc">r — радиус</div>
+          </div>
+          <div class="form-item">
+            <div class="title">Тригонометриялық тотожды</div>
+            <div class="expr">sin²x + cos²x = 1</div>
+            <div class="desc">Барлық x үшін</div>
+          </div>
+          <div class="form-item">
+            <div class="title">Комбинациялар</div>
+            <div class="expr">C(n,k) = n! / (k!(n−k)!)</div>
+            <div class="desc">n элементтен k таңдау</div>
+          </div>
+          <div class="form-item">
+            <div class="title">Сызықтық функция</div>
+            <div class="expr">y = kx + b</div>
+            <div class="desc">k — бағаның қиылысы, b — орын ауыстыру</div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <footer>Күн/түн режимі сақталады. Фон-декорация ұқыпты орналастырылған — формулалар мен ойындар қайта қосылды.</footer>
+  </div>
+
+  <!-- ===== Lightweight AI Chat widget (inserted for prototyping) ===== -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap">
+  <div id="mb-ai-widget" aria-live="polite" style="position:fixed;right:18px;bottom:18px;z-index:99999;font-family:Inter,system-ui,Arial;">
+    <button id="mb-ai-toggle" title="ЖИ көмекші" aria-expanded="false" style="width:56px;height:56px;border-radius:50%;border:0;background:linear-gradient(135deg,#22d3ee,#7c3aed);color:#07101f;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 8px 28px rgba(0,0,0,.25);">ЖИ</button>
+
+    <div id="mb-ai-panel" role="dialog" aria-hidden="true" style="display:none;width:380px;max-width:92vw;background:rgba(10,12,20,.96);color:#fff;border-radius:12px;margin-bottom:12px;box-shadow:0 20px 60px rgba(0,0,0,.5);overflow:hidden;">
+      <div id="mb-ai-header" style="display:flex;justify-content:space-between;align-items:center;padding:12px 12px;border-bottom:1px solid rgba(255,255,255,.04);background:linear-gradient(90deg,#0b1220,rgba(255,255,255,.02));">
+        <strong>MathBoard — ЖИ көмекші</strong>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="mb-ai-settingsBtn" title="Параметрлер" style="background:transparent;border:0;color:inherit;cursor:pointer">⚙️</button>
+          <button id="mb-ai-close" style="background:transparent;border:0;color:inherit;cursor:pointer">✕</button>
+        </div>
+      </div>
+
+      <div id="mb-ai-body" style="padding:10px;display:flex;flex-direction:column;gap:8px;">
+        <div id="mb-ai-messages" aria-live="polite" style="height:320px;overflow:auto;display:flex;flex-direction:column-reverse;gap:8px;padding:6px;"></div>
+
+        <div id="mb-ai-controls" style="display:flex;gap:8px;">
+          <input id="mb-ai-input" placeholder="Математикалық сұрақ жаз (мыс: ∫ x dx, 2+2*5, sin(pi/3))"
+                 style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;">
+          <button id="mb-ai-send" style="padding:10px 12px;border-radius:8px;border:0;background:linear-gradient(90deg,#22d3ee,#7c3aed);color:#07101f;font-weight:800;cursor:pointer;">Жіберу</button>
+        </div>
+
+        <div id="mb-ai-footer" style="font-size:12px;color:rgba(255,255,255,.7);">
+          Жергілікті есептеу: Math.js — жылдам. OpenAI-ға жіберу үшін API кілтін параметрлерге енгізіңіз.
+        </div>
+      </div>
+
+      <div id="mb-ai-settings" aria-hidden="true" style="display:none;padding:10px;border-top:1px solid rgba(255,255,255,0.03);background:rgba(0,0,0,0.06);color:#fff;">
+        <label style="font-size:13px;">OpenAI API кілті (міндетті емес):
+          <input id="mb-ai-apiKey" placeholder="sk-..." style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;margin-top:6px;">
+        </label>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button id="mb-ai-saveKey" style="padding:8px;border-radius:8px;background:linear-gradient(90deg,#22d3ee,#7c3aed);border:0;color:#07101f;cursor:pointer">Сақтау</button>
+          <button id="mb-ai-clearKey" style="padding:8px;border-radius:8px;background:rgba(255,255,255,0.06);border:0;color:inherit;cursor:pointer">Өшіру</button>
+        </div>
+        <div style="margin-top:8px;font-size:12px;color:#bbb">ЕСКЕРТУ: Клиент жағында кілт сақтау қауіпсіз емес. Прототип үшін ғана.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Math.js and MathJax (for local eval & LaTeX rendering) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+
+  <script>
+    // === Existing page scripts (canvas, carousel, theme) ===
+    // Theme toggle, carousel, canvas & drawing logic from previous page
+    (function(){
+      // Theme toggle
+      const THEME_KEY='mathboard_theme_v1';
+      const themeBtn=document.getElementById('themeBtn');
+      function applyTheme(t){
+        document.body.setAttribute('data-theme', t==='day'?'day':'night');
+        themeBtn.textContent = t==='day' ? '☀️ Күн' : '🌙 Түн';
+        localStorage.setItem(THEME_KEY,t);
+      }
+      applyTheme(localStorage.getItem(THEME_KEY) || 'night');
+      themeBtn.addEventListener('click', ()=> applyTheme(document.body.dataset.theme==='day'?'night':'day'));
+
+      // Carousel arrows / swipe
+      const viewport = document.getElementById('viewport');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      function slideW(){ return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--slide-w')) || 320; }
+      prevBtn.addEventListener('click', ()=> viewport.scrollBy({left: - (slideW() + 12), behavior:'smooth'}));
+      nextBtn.addEventListener('click', ()=> viewport.scrollBy({left: (slideW() + 12), behavior:'smooth'}));
+
+      // Drag-to-scroll for viewport
+      (function makeDraggable(el){
+        let active=false,startX,scrollLeft;
+        el.addEventListener('mousedown', e=> { active=true; startX=e.pageX - el.offsetLeft; scrollLeft=el.scrollLeft; el.style.cursor='grabbing'; });
+        el.addEventListener('mouseleave', ()=>{ active=false; el.style.cursor=''; });
+        el.addEventListener('mouseup', ()=>{ active=false; el.style.cursor=''; });
+        el.addEventListener('mousemove', e=>{ if(!active) return; e.preventDefault(); const x = e.pageX - el.offsetLeft; const walk = (x - startX); el.scrollLeft = scrollLeft - walk; });
+        // touch
+        let tStartX=0,tScroll=0;
+        el.addEventListener('touchstart', e=>{ tStartX = e.touches[0].pageX; tScroll = el.scrollLeft; }, {passive:true});
+        el.addEventListener('touchmove', e=>{ const dx = e.touches[0].pageX - tStartX; el.scrollLeft = tScroll - dx; }, {passive:true});
+      })(viewport);
+
+      // Canvas draw
+      const canvas=document.getElementById('canvas'), ctx=canvas.getContext('2d');
+      const modeEl=document.getElementById('mode'), sizeEl=document.getElementById('size'), colorEl=document.getElementById('color');
+      let drawing=false,lastX=0,lastY=0,lineStart=null,history=[];
+      function fitCanvas(){
+        const r=canvas.getBoundingClientRect(), dpr=window.devicePixelRatio||1;
+        canvas.width=Math.floor(r.width*dpr);
+        canvas.height=Math.floor(r.height*dpr);
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+        if(history.length){
+          const img=new Image(); img.onload=()=>ctx.drawImage(img,0,0,r.width,r.height); img.src=history[history.length-1];
+        } else { ctx.clearRect(0,0,canvas.width,canvas.height); }
+      }
+      function snapshot(){ history.push(canvas.toDataURL()); if(history.length>12) history.shift(); }
+      function getPos(e){ const r=canvas.getBoundingClientRect(); const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left; const y=(e.touches?e.touches[0].clientY:e.clientY)-r.top; return {x,y}; }
+      function start(e){ e.preventDefault(); const {x,y}=getPos(e); const mode=modeEl.value; if(mode==='line'){ if(!lineStart){ lineStart={x,y}; } else { snapshot(); ctx.save(); ctx.lineCap='round'; ctx.lineJoin='round'; ctx.lineWidth=+sizeEl.value; ctx.strokeStyle=colorEl.value; ctx.beginPath(); ctx.moveTo(lineStart.x,lineStart.y); ctx.lineTo(x,y); ctx.stroke(); ctx.restore(); lineStart=null; } return; } snapshot(); drawing=true; lastX=x; lastY=y; }
+      function move(e){ if(!drawing) return; e.preventDefault(); const {x,y}=getPos(e); const mode=modeEl.value; ctx.save(); ctx.lineCap='round'; ctx.lineJoin='round'; ctx.lineWidth=+sizeEl.value; if(mode==='eraser'){ ctx.globalCompositeOperation='destination-out'; ctx.strokeStyle='rgba(0,0,0,1)'; } else { ctx.globalCompositeOperation='source-over'; ctx.strokeStyle=colorEl.value; } ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(x,y); ctx.stroke(); ctx.restore(); lastX=x; lastY=y; }
+      function end(){ drawing=false; }
+      document.getElementById('clearBtn').onclick=()=>{ snapshot(); ctx.clearRect(0,0,canvas.width,canvas.height); lineStart=null; };
+      document.getElementById('undoBtn').onclick=()=>{ if(history.length<2) return; history.pop(); const img=new Image(); img.onload=()=>{ const r=canvas.getBoundingClientRect(); ctx.clearRect(0,0,canvas.width,canvas.height); ctx.drawImage(img,0,0,r.width,r.height); }; img.src=history[history.length-1]; lineStart=null; };
+      canvas.addEventListener('mousedown',start); canvas.addEventListener('mousemove',move); window.addEventListener('mouseup',end);
+      canvas.addEventListener('touchstart',start,{passive:false}); canvas.addEventListener('touchmove',move,{passive:false}); window.addEventListener('touchend',end);
+      window.addEventListener('resize',fitCanvas);
+      fitCanvas(); snapshot();
+    })();
+  </script>
+
+  <!-- ===== Widget logic (Math.js + optional OpenAI client-side calls) ===== -->
+  <script>
+    (function(){
+      const toggleBtn = document.getElementById('mb-ai-toggle');
+      const panel = document.getElementById('mb-ai-panel');
+      const closeBtn = document.getElementById('mb-ai-close');
+      const sendBtn = document.getElementById('mb-ai-send');
+      const input = document.getElementById('mb-ai-input');
+      const messages = document.getElementById('mb-ai-messages');
+      const settingsBtn = document.getElementById('mb-ai-settingsBtn');
+      const settingsPane = document.getElementById('mb-ai-settings');
+      const apiKeyInput = document.getElementById('mb-ai-apiKey');
+      const saveKeyBtn = document.getElementById('mb-ai-saveKey');
+      const clearKeyBtn = document.getElementById('mb-ai-clearKey');
+
+      const STORAGE_KEY = 'mathboard_ai_apikey_v1';
+
+      // Toggle panel
+      toggleBtn.addEventListener('click', ()=>{
+        const visible = panel.style.display === 'block';
+        panel.style.display = visible ? 'none' : 'block';
+        toggleBtn.setAttribute('aria-expanded', !visible);
+        if(!visible) input.focus();
+      });
+      closeBtn.addEventListener('click', ()=>{ panel.style.display = 'none'; });
+
+      settingsBtn.addEventListener('click', ()=>{
+        const vis = settingsPane.style.display === 'block';
+        settingsPane.style.display = vis ? 'none' : 'block';
+      });
+
+      // Load saved key (if any) into field
+      const storedKey = localStorage.getItem(STORAGE_KEY);
+      if(storedKey) apiKeyInput.value = storedKey;
+
+      saveKeyBtn.addEventListener('click', ()=>{
+        const k = apiKeyInput.value.trim();
+        if(!k){ alert('Кілт бос — енгізіңіз немесе өшіріңіз.'); return; }
+        localStorage.setItem(STORAGE_KEY, k);
+        alert('API кілті сақталды (локалStorage). Қауіпсіздікке назар аударыңыз.');
+      });
+      clearKeyBtn.addEventListener('click', ()=>{
+        localStorage.removeItem(STORAGE_KEY);
+        apiKeyInput.value='';
+        alert('API кілті өшірілді.');
+      });
+
+      function addMessageHTML(html, from='bot'){
+        const el = document.createElement('div');
+        el.className = 'mb-msg ' + (from==='user' ? 'user' : 'bot');
+        el.style.padding = '8px';
+        el.style.borderRadius = '8px';
+        el.style.maxWidth = '100%';
+        el.style.wordBreak = 'break-word';
+        if(from==='user'){
+          el.style.background = 'linear-gradient(90deg,#22d3ee20,#7c3aed20)';
+          el.style.alignSelf = 'flex-end';
+          el.style.color = '#07101f';
+          el.style.fontWeight = '700';
+        } else {
+          el.style.background = 'rgba(255,255,255,0.03)';
+          el.style.border = '1px solid rgba(255,255,255,0.04)';
+          el.style.alignSelf = 'flex-start';
+        }
+        el.innerHTML = html;
+        messages.prepend(el);
+        if(window.MathJax && MathJax.typesetPromise){
+          MathJax.typesetPromise([el]).catch(()=>{});
+        }
+      }
+
+      function escapeHtml(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+      // Try to evaluate locally using math.js
+      function tryLocalEval(q){
+        try {
+          let expr = q.replaceAll('π','pi').replaceAll('√','sqrt').replaceAll('^','**');
+          // allow letters for functions like sin, cos, log, but disallow suspicious chars
+          const safe = /^[0-9+\-*/^()., %a-zA-Zπ√]+$/.test(expr);
+          if(!safe) return null;
+          const res = math.evaluate(expr);
+          return (typeof res === 'number' || typeof res === 'string' || math.typeOf(res) === 'BigNumber') ? res : String(res);
+        } catch(e){ return null; }
+      }
+
+      // OpenAI direct call (client-side) — prototyping only
+      async function queryOpenAI(question){
+        const key = localStorage.getItem(STORAGE_KEY);
+        if(!key) throw new Error('API кілті жоқ (Параметрлерден орнатыңыз).');
+        const system = `Сіз математика оқытушысы. Сұраққа қазақша қысқа әрі нақты жауап беріңіз. Егер есеп болса — шешудің қадамдарын LaTeX-те көрсетіңіз.`;
+        const payload = {
+          model: "gpt-3.5-turbo",
+          messages: [
+            {role: "system", content: system},
+            {role: "user", content: question}
+          ],
+          max_tokens: 800,
+          temperature: 0.2
+        };
+        const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Content-Type':'application/json', 'Authorization': 'Bearer ' + key },
+          body: JSON.stringify(payload)
+        });
+        if(!resp.ok){
+          const t = await resp.text();
+          throw new Error('OpenAI қатесі: '+ resp.status + ' — ' + t);
+        }
+        const data = await resp.json();
+        const content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+        return content || 'Жауап табылмады.';
+      }
+
+      async function handleSend(){
+        const q = input.value.trim();
+        if(!q) return;
+        addMessageHTML('<b>Сіз:</b> ' + escapeHtml(q), 'user');
+        input.value = '';
+        const local = tryLocalEval(q);
+        if(local !== null){
+          addMessageHTML(`<b>Жауап (жергілікті):</b> \$${escapeHtml(String(local))}\$`, 'bot');
+          return;
+        }
+        if(local === null && !localStorage.getItem(STORAGE_KEY)){
+          addMessageHTML(`<b>ЖИ:</b> Жергілікті шешім табылмады. Егер толық жауап қажет болса, параметрлерден OpenAI API кілтін қойып, қайтадан жіберіңіз.`, 'bot');
+          return;
+        }
+        addMessageHTML('<i>Жауап ізделуде...</i>', 'bot');
+        try {
+          const answer = await queryOpenAI(q);
+          const safe = escapeHtml(answer).replace(/\n/g,'<br>');
+          addMessageHTML(`<b>ЖИ:</b> ${safe}`, 'bot');
+        } catch(err){
+          addMessageHTML(`<b>Қате:</b> ${escapeHtml(err.message)}`, 'bot');
+        }
+      }
+
+      sendBtn.addEventListener('click', handleSend);
+      input.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); handleSend(); } });
+
+      // Welcome
+      addMessageHTML('<b>ЖИ:</b> Сәлем! Математикалық сұрағыңыз бар ма? (мыс: 2+2*5, sqrt(121), ∫ x dx)');
+      // Click message to copy
+      messages.addEventListener('click', (e)=>{
+        const m = e.target.closest('.mb-msg');
+        if(!m) return;
+        input.value = m.textContent.replace(/^ЖИ:|Сіз:/g,'').trim();
+      });
+    })();
+  </script>
+</body>
+</html>
