@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Математикалық сауаттылық — 10 нұсқа × 4 вариант × 10 есеп</title>
+  <style>
+    :root{
+      --bg1:#e9f7ff;
+      --bg2:#fff1f7;
+      --card:#ffffffd8;
+      --glass:#ffffffa5;
+      --text:#0b1220;
+      --muted:#4b5563;
+      --primary:#2563eb;
+      --primary2:#7c3aed;
+      --radius:20px;
+      --shadow:0 16px 52px #2563eb23;
+      --soft:#eef2ff;
+      --danger:#ef4444;
+      --good:#22c55e;
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      font-family:sans-serif;
+      background:radial-gradient(1200px 600px at 10% 10%, #b8f3ff 0%,transparent 60%),
+                 radial-gradient(900px 600px at 90% 25%, #ffd6e7 0%,transparent 55%),
+                 linear-gradient(135deg, var(--bg1), var(--bg2));
+      color:var(--text);
+      min-height:100vh;
+    }
+    .container{max-width:1120px;margin:0 auto;padding:22px 14px 70px;}
+    header{
+      display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
+      padding:15px 16px;border-radius:var(--radius);
+      background:var(--glass);box-shadow:var(--shadow);backdrop-filter:blur(12px);
+      border:1px solid #dde6fa;
+      margin-bottom:16px;
+    }
+    @media(max-width:900px){header{flex-direction:column;}}
+    h1{margin:0;font-size:20px;}
+    p{margin:6px 0 0;color:var(--muted);font-size:13px;}
+    .btn{
+      border:0;cursor:pointer;padding:10px 14px;border-radius:16px;
+      font-weight:800;font-size:13px;background:#fff;color:#0f172a;
+      box-shadow:0 9px 18px #115ded15;text-decoration:none;
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid #e0e7ef;
+      user-select:none;
+    }
+    .btn.primary{color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary2));border:0;}
+    .btn.ghost{background:#ffffffb1;}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+    .grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:12px;align-items:start;}
+    @media(max-width:1000px){.grid{grid-template-columns:1fr;}}
+    .card{
+      padding:14px 16px;border-radius:var(--radius);
+      background:var(--card);box-shadow:var(--shadow);
+      border:1px solid #d8e3fa;
+    }
+    label{font-size:13px;color:var(--muted);}
+    select,input{
+      padding:9px 11px;border-radius:12px;border:1px solid #cfe0ff;background:#fff;
+      font-size:13px;
+    }
+    .q{padding:10px 12px;border-radius:14px;background:#f7f9ff;border:1px solid #e5e7eb;margin:10px 0;}
+    .q b{display:block;margin-bottom:7px;}
+    .opt{display:block;margin:5px 0;font-size:13px;color:#111827;}
+    .opt input{margin-right:8px;}
+    .hint{font-size:12px;color:var(--muted);}
+    .result{
+      padding:10px 12px;border-radius:14px;background:var(--soft);border:1px dashed #a5b4fc;
+      margin-top:10px;font-size:13px;
+    }
+    .small{font-size:12px;color:var(--muted);}
+    table{width:100%;border-collapse:collapse;margin-top:10px;font-size:12px;}
+    th,td{border:1px solid #e5e7eb;padding:6px 8px;text-align:left;}
+    th{background:#e0e7ff;}
+    .good{color:var(--good);font-weight:800;}
+    .bad{color:var(--danger);font-weight:800;}
+    .chip{padding:6px 10px;border-radius:999px;background:#e0f2fe;font-size:12px;font-weight:700;}
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div>
+      <h1>Математикалық сауаттылық</h1>
+      <p>10 нұсқа (1–10). Әр нұсқада 4 вариант (A–D), әр вариантта 10 сұрақ. Тексеру, нәтижені енгізу/сақтау.</p>
+      <div class="row" style="margin-top:8px;">
+        <span class="chip">10 нұсқа</span>
+        <span class="chip">4 вариант</span>
+        <span class="chip">10 есеп</span>
+      </div>
+    </div>
+    <div class="row">
+      <a class="btn ghost" href="index.html">← Басты бет</a>
+      <button class="btn" id="resetAttemptBtn">Жауаптарды тазалау</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <section class="card">
+      <h2 style="margin:0 0 10px;">Тест</h2>
+
+      <div class="row" style="margin-bottom:10px;">
+        <label>Нұсқа:
+          <select id="setSel"></select>
+        </label>
+        <label>Вариант:
+          <select id="varSel">
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+          </select>
+        </label>
+        <button class="btn primary" id="loadBtn">Жүктеу</button>
+      </div>
+
+      <div id="testMeta" class="small"></div>
+      <div id="questions"></div>
+
+      <div class="row" style="margin-top:10px;">
+        <button class="btn primary" id="checkBtn">✅ Тексеру (10 балл)</button>
+        <button class="btn" id="showKeyBtn">🔎 Дұрыс жауаптарды көрсету</button>
+      </div>
+
+      <div class="result" id="testResult">Нәтиже: әзірге жоқ</div>
+      <div class="small">Ескерту: бұл бет “үлгі-конструктор”. Кейін сұрақтарды өзің қалағандай ауыстыра аласың.</div>
+    </section>
+
+    <aside class="card">
+      <h2 style="margin:0 0 10px;">Нәтижелерді енгізу және сақтау</h2>
+
+      <div class="row" style="margin-bottom:10px;">
+        <label style="flex:1;">Оқушы аты-жөні:
+          <input id="studentName" placeholder="Мыс: Айдос С." style="width:100%;">
+        </label>
+      </div>
+
+      <div class="row" style="margin-bottom:10px;">
+        <label>Нұсқа:
+          <select id="saveSetSel"></select>
+        </label>
+        <label>Вариант:
+          <select id="saveVarSel">
+            <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="row" style="margin-bottom:10px;">
+        <label>Балл (0–10):
+          <input id="manualScore" type="number" min="0" max="10" step="1" value="0" style="width:110px;">
+        </label>
+        <button class="btn primary" id="saveBtn">💾 Сақтау</button>
+      </div>
+
+      <div class="small" id="saveMsg"></div>
+
+      <h3 style="margin:14px 0 6px;">Сақталған нәтижелер</h3>
+      <div class="row" style="margin-bottom:10px;">
+        <button class="btn" id="refreshBtn">↻ Жаңарту</button>
+        <button class="btn" id="clearAllBtn">🗑 Барлығын өшіру</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>№</th>
+            <th>Аты-жөні</th>
+            <th>Нұсқа</th>
+            <th>Вариант</th>
+            <th>Балл</th>
+            <th>Уақыты</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </aside>
+  </div>
+</div>
+
+<script>
+  // ---------------------------
+  // 1) ДЕРЕК ҚҰРЫЛЫМЫ (үлгі)
+  // 10 нұсқа × 4 вариант × 10 есеп
+  // Қазір сұрақтар "шаблон" түрінде автомат жасалады.
+  // Сен қаласаң, кейін әр нұсқа/вариантқа нақты мәтінді қолмен ауыстырып беремін.
+  // ---------------------------
+  const SETS = 10;
+  const VARS = ["A","B","C","D"];
+  const QCOUNT = 10;
+
+  // Дұрыс жауаптар шаблоны (әр вариантқа әртүрлі болсын деп айналдырамыз)
+  // A: 1,2,3,4... цикл, B: ығысқан, т.с.с.
+  const baseKey = [0,1,2,3, 1,2,3,0, 2,3]; // 10 сұрақ, жауап индекстері 0..3
+
+  // Тест генераторы (әр нұсқа/вариант үшін басқа сандар/контент шығарады)
+  function makeTest(setNo, variant){
+    const vShift = VARS.indexOf(variant); // 0..3
+    const questions = [];
+
+    for(let i=1;i<=QCOUNT;i++){
+      // Контентті "мат.сауат" стилінде: пайыз, пропорция, жылдамдық, орташа, диаграмма т.б.
+      // (Бұл жерде қысқа, ортақ үлгі. Кейін сен нақты 100 есеп мәтінін берсең, осыны соған ауыстырам.)
+      const seed = setNo*100 + vShift*25 + i*7;
+
+      // 4 түрлі типті айналдырып береміз:
+      const type = (i + setNo + vShift) % 4;
+
+      let qText = "";
+      let opts = [];
+      let correct = (baseKey[i-1] + vShift) % 4;
+
+      if(type === 0){
+        const a = (seed % 40) + 10; // 10..49
+        const b = (seed % 9) + 2;   // 2..10
+        qText = `${i}) Дүкенде ${a} теңге тұратын затқа ${b*10}% жеңілдік жасалды. Жеңілдіктен кейінгі бағасы қанша теңге?`;
+        const ans = Math.round(a*(1 - (b*10)/100));
+        // 4 нұсқа
+        opts = [ans, ans + 2, ans - 3, ans + 5].map(x=>String(x));
+        correct = 0;
+      } else if(type === 1){
+        const d = (seed % 9) + 2; // 2..10
+        const t = (seed % 6) + 2; // 2..7
+        qText = `${i}) Автокөлік ${t} сағатта ${d*30} км жүрді. Орташа жылдамдығы (км/сағ) қанша?`;
+        const ans = (d*30)/t;
+        opts = [ans, ans+5, ans-3, ans+2].map(x=>String(x));
+        correct = 0;
+      } else if(type === 2){
+        const x = (seed % 20) + 5; // 5..24
+        const y = (seed % 15) + 10; // 10..24
+        qText = `${i}) Бір қорапта ${x} қалам, ал екінші қорапта ${y} қалам бар. Екеуінде барлығы неше қалам?`;
+        const ans = x+y;
+        opts = [ans, ans+1, ans-2, ans+5].map(String);
+        correct = 0;
+      } else {
+        const p = (seed % 8) + 2; // 2..9
+        const q = (seed % 7) + 3; // 3..9
+        qText = `${i}) Егер 1 кг алма ${p*100} тг болса, ${q} кг алма қанша теңге тұрады?`;
+        const ans = p*100*q;
+        opts = [ans, ans + 100, ans - 200, ans + 300].map(String);
+        correct = 0;
+      }
+
+      // correct-ты вариантқа қарай "араластырайық": opts-ты shuffle жасап,
+      // дұрыс жауабын дұрыс индексімен ұстап қаламыз.
+      const rightVal = opts[0];
+      // "көрінетін" дұрыс нұсқаны вариантқа тәуелді қыламыз:
+      const perm = permByShift(vShift); // [..] төрт опцияға permutation
+      const newOpts = perm.map(pi => opts[pi]);
+      const newCorrect = perm.indexOf(0); // opts[0] қай жерде тұр?
+
+      questions.push({
+        text: qText,
+        options: newOpts,
+        correct: newCorrect,
+        answerText: rightVal
+      });
+    }
+
+    return { setNo, variant, questions };
+  }
+
+  // 4 элемент permutation (вариантқа қарай нұсқа реті өзгереді)
+  function permByShift(shift){
+    const perms = [
+      [0,1,2,3], // A
+      [1,2,3,0], // B
+      [2,3,0,1], // C
+      [3,0,1,2]  // D
+    ];
+    return perms[shift] || perms[0];
+  }
+
+  // ---------------------------
+  // 2) UI: select толтыру
+  // ---------------------------
+  const setSel = document.getElementById('setSel');
+  const saveSetSel = document.getElementById('saveSetSel');
+  for(let i=1;i<=SETS;i++){
+    setSel.innerHTML += `<option value="${i}">${i}-нұсқа</option>`;
+    saveSetSel.innerHTML += `<option value="${i}">${i}-нұсқа</option>`;
+  }
+  setSel.value = "1";
+  saveSetSel.value = "1";
+
+  const varSel = document.getElementById('varSel');
+  const saveVarSel = document.getElementById('saveVarSel');
+
+  // ---------------------------
+  // 3) РЕНДЕР / САҚТАУ (жергілікті жауаптар)
+  // ---------------------------
+  const questionsEl = document.getElementById('questions');
+  const testMeta = document.getElementById('testMeta');
+  const testResult = document.getElementById('testResult');
+
+  const STORAGE_ATTEMPT = "math_lit_attempt_v1";
+  const STORAGE_RESULTS = "math_lit_results_v1";
+
+  function attemptKey(setNo, variant){
+    return `${setNo}_${variant}`;
+  }
+
+  function loadAttemptMap(){
+    try{
+      const raw = localStorage.getItem(STORAGE_ATTEMPT);
+      const obj = raw ? JSON.parse(raw) : {};
+      return (obj && typeof obj === 'object') ? obj : {};
+    }catch(e){ return {}; }
+  }
+  function saveAttemptMap(map){
+    localStorage.setItem(STORAGE_ATTEMPT, JSON.stringify(map));
+  }
+
+  function renderTest(){
+    const setNo = Number(setSel.value);
+    const variant = varSel.value;
+    const test = makeTest(setNo, variant);
+
+    testMeta.textContent = `Қазір: ${setNo}-нұсқа, ${variant} вариант. Барлығы: 10 сұрақ.`;
+
+    const attempts = loadAttemptMap();
+    const key = attemptKey(setNo, variant);
+    const saved = attempts[key] || {}; // {q1: idx, q2: idx...}
+
+    questionsEl.innerHTML = test.questions.map((q, idx)=>{
+      const qNo = idx+1;
+      const name = `q_${qNo}`;
+      const chosen = saved[name]; // 0..3
+      const optsHtml = q.options.map((op, oi)=>{
+        const checked = (chosen === oi) ? "checked" : "";
+        return `<label class="opt"><input type="radio" name="${name}" value="${oi}" ${checked}> ${String.fromCharCode(65+oi)}) ${op}</label>`;
+      }).join("");
+      return `
+        <div class="q" data-qno="${qNo}">
+          <b>${q.text}</b>
+          ${optsHtml}
+          <div class="hint" id="fb_${qNo}"></div>
+        </div>
+      `;
+    }).join("");
+
+    // Радио өзгерісін сақтап отыру
+    questionsEl.querySelectorAll('input[type="radio"]').forEach(r=>{
+      r.addEventListener('change', ()=>{
+        const attempts = loadAttemptMap();
+        const key = attemptKey(Number(setSel.value), varSel.value);
+        attempts[key] = attempts[key] || {};
+        attempts[key][r.name] = Number(r.value);
+        saveAttemptMap(attempts);
+      });
+    });
+
+    testResult.textContent = "Нәтиже: әзірге жоқ";
+  }
+
+  document.getElementById('loadBtn').addEventListener('click', ()=>{
+    renderTest();
+    // оң жақтағы "қолмен енгізу" select-терін де синхрондайық:
+    saveSetSel.value = setSel.value;
+    saveVarSel.value = varSel.value;
+  });
+
+  // Алғашқы рендер
+  renderTest();
+
+  // ---------------------------
+  // 4) ТЕКСЕРУ (10 балл)
+  // ---------------------------
+  function checkTest(showKey=false){
+    const setNo = Number(setSel.value);
+    const variant = varSel.value;
+    const test = makeTest(setNo, variant);
+
+    let score = 0;
+
+    for(let i=1;i<=QCOUNT;i++){
+      const q = test.questions[i-1];
+      const sel = document.querySelector(`input[name="q_${i}"]:checked`);
+      const fb = document.getElementById(`fb_${i}`);
+
+      if(!sel){
+        fb.textContent = showKey ? `Дұрыс: ${String.fromCharCode(65+q.correct)}) ${q.answerText}` : "Жауап таңдалмаған.";
+        fb.className = "hint bad";
+        continue;
+      }
+
+      const chosen = Number(sel.value);
+      if(chosen === q.correct){
+        score++;
+        fb.textContent = showKey ? `Дұрыс! (${String.fromCharCode(65+q.correct)})` : "Дұрыс!";
+        fb.className = "hint good";
+      }else{
+        fb.textContent = showKey
+          ? `Қате. Дұрыс: ${String.fromCharCode(65+q.correct)}) ${q.answerText}`
+          : "Қате.";
+        fb.className = "hint bad";
+      }
+    }
+
+    testResult.innerHTML = `Нәтиже: <b>${score}/10</b> балл.`;
+    // Авто түрде "қолмен енгізу" өрісіне қояйық
+    document.getElementById('manualScore').value = score;
+    // Синхрон
+    saveSetSel.value = setSel.value;
+    saveVarSel.value = varSel.value;
+
+    return score;
+  }
+
+  document.getElementById('checkBtn').addEventListener('click', ()=>checkTest(false));
+  document.getElementById('showKeyBtn').addEventListener('click', ()=>checkTest(true));
+
+  // ---------------------------
+  // 5) ЖАУАПТАРДЫ ТАЗАЛАУ
+  // ---------------------------
+  document.getElementById('resetAttemptBtn').addEventListener('click', ()=>{
+    const setNo = Number(setSel.value);
+    const variant = varSel.value;
+    const attempts = loadAttemptMap();
+    delete attempts[attemptKey(setNo, variant)];
+    saveAttemptMap(attempts);
+    renderTest();
+  });
+
+  // ---------------------------
+  // 6) НӘТИЖЕНІ САҚТАУ (manual + auto)
+  // ---------------------------
+  function loadResults(){
+    try{
+      const raw = localStorage.getItem(STORAGE_RESULTS);
+      const arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    }catch(e){ return []; }
+  }
+  function saveResults(arr){
+    localStorage.setItem(STORAGE_RESULTS, JSON.stringify(arr));
+  }
+
+  function renderResults(){
+    const rows = document.getElementById('rows');
+    const arr = loadResults();
+    rows.innerHTML = arr.map((r, idx)=>`
+      <tr>
+        <td>${idx+1}</td>
+        <td>${r.name}</td>
+        <td>${r.setNo}</td>
+        <td>${r.variant}</td>
+        <td>${r.score}</td>
+        <td>${r.time}</td>
+      </tr>
+    `).join("");
+  }
+  renderResults();
+
+  document.getElementById('saveBtn').addEventListener('click', ()=>{
+    const name = document.getElementById('studentName').value.trim();
+    const setNo = Number(saveSetSel.value);
+    const variant = saveVarSel.value;
+    const score = Number(document.getElementById('manualScore').value);
+
+    const msg = document.getElementById('saveMsg');
+    msg.textContent = "";
+    msg.className = "small";
+
+    if(!name){
+      msg.textContent = "Аты-жөнін енгізіңіз.";
+      msg.className = "small bad";
+      return;
+    }
+    if(!Number.isFinite(score) || score < 0 || score > 10){
+      msg.textContent = "Балл 0–10 аралығында болуы керек.";
+      msg.className = "small bad";
+      return;
+    }
+
+    const now = new Date();
+    const time = now.toLocaleString('kk-KZ',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+
+    const arr = loadResults();
+    arr.push({ name, setNo, variant, score, time });
+    saveResults(arr);
+    renderResults();
+
+    msg.textContent = "Нәтиже сақталды.";
+    msg.className = "small good";
+  });
+
+  document.getElementById('refreshBtn').addEventListener('click', renderResults);
+
+  document.getElementById('clearAllBtn').addEventListener('click', ()=>{
+    if(confirm("Барлық сақталған нәтижелер өшірілсін бе?")){
+      saveResults([]);
+      renderResults();
+      const msg = document.getElementById('saveMsg');
+      msg.textContent = "Барлығы өшірілді.";
+      msg.className = "small";
+    }
+  });
+</script>
+</body>
+</html>

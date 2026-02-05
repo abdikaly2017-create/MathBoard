@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <title>Match: Формула ↔ Атауы — сәйкестендіру</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <style>
+    body{margin:0;font-family:sans-serif;background:#f8fafc;}
+    .main{max-width:650px;margin:24px auto;padding:24px 10px;background:#fff;border-radius:18px;box-shadow:0 12px 32px #818cf811;}
+    h1{margin:0 0 10px;color:#6366f1;}
+    .chip{background:#e0e7ff;font-weight:700;border-radius:999px;padding:4px 9px;margin-right:12px;}
+    .matchblock{background:#e0e7ff;padding:13px 10px 20px 10px;border-radius:13px;}
+    .cell{margin:8px 0;}
+    .input{width:30px;border-radius:6px;padding:6px 8px;}
+    .btn{padding:7px 16px;font-size:14px;border-radius:9px;background:#e0e7ff;border:0;font-weight:700;margin-right:9px;margin-top:8px;}
+    .res{margin-top:8px;}
+    .pairlist{font-size:15px;}
+    .main a{font-size:13px;}
+  </style>
+</head>
+<body>
+<div class="main">
+  <h1>Match: <span class="chip">Формула ↔ Атауы</span></h1>
+  <div class="matchblock">
+    <div class="pairlist" id="leftcol"></div>
+    <div class="pairlist" id="rightcol"></div>
+    <button class=btn onclick="check()">Тексеру</button>
+    <button class=btn onclick="reset()">Қайталау</button>
+    <div class=res id="res"></div>
+  </div>
+  <p><a href="index.html">← Басты бет</a></p>
+</div>
+<script>
+const pairs=[
+ {f:"aₙ = a₁ + (n−1)d",m:"a","desc":"Арифм. прогрессия мүшесі"},
+ {f:"Sₙ = (n/2)(2a₁+(n-1)d)",m:"b","desc":"Арифм. прогрессия қосынды"},
+ {f:"bₙ = b₁·qⁿ⁻¹",m:"c","desc":"Геометриял. прогрессия мүшесі"},
+ {f:"sin² α + cos² α = 1",m:"d","desc":"Тригонометрия фундамент. формула"},
+ {f:"S_{үшб} = ½ a·h",m:"e","desc":"Үшбұрыш ауданы"},
+ {f:"S_{шең} = πr²",m:"f","desc":"Шеңбер ауданы"}
+];
+let order=[...pairs.keys()].sort(()=>Math.random()-.5);
+function draw(){
+  leftcol.innerHTML=""; rightcol.innerHTML="";
+  order.forEach((i,idx)=>{
+    leftcol.innerHTML+=`<div class='cell'><b>${idx+1})</b>  ${pairs[i].f} — <input class=input maxlength=1 style='text-transform:lowercase' id='ans${i}'></div>`;
+  });
+  let right=[...pairs].sort(()=>Math.random()-.5);
+  right.forEach((p,idx)=>{
+    rightcol.innerHTML+=`<div class='cell'><b>${p.m})</b> ${p.desc}</div>`;
+  });
+  res.textContent="";
+}
+function check(){
+  let correct=0;
+  order.forEach((i,idx)=>{
+    let input=document.getElementById('ans'+i).value.trim().toLowerCase();
+    if(input===pairs[i].m)correct++;
+  });
+  res.innerHTML="<b>Дұрыс:"+correct+"/"+pairs.length+"</b>"+(correct===pairs.length?" — Өте жақсы!":"");
+}
+function reset(){draw();}
+reset();
+</script>
+</body>
+</html>

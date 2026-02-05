@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <title>Formula Sprint — жылдам формула ойыны</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <style>
+    body{margin:0;font-family:sans-serif;background:#e5f6fd;}
+    .main{max-width:600px;margin:24px auto;padding:24px 9px;background:#fff;border-radius:20px;box-shadow:0 12px 32px #38bdf811;}
+    h1{margin:0 0 10px 0;color:#0ea5e9;}
+    .chip{background:#e0f2fe;font-weight:700;border-radius:999px;padding:4px 9px;margin-right:12px;}
+    .sprint{background:#e0f2fe;margin-bottom:16px;border-radius:10px;padding:7px 13px;}
+    .q{font-size:20px;margin:17px 0 8px 0;font-weight:600;}
+    .a-btn{font-size:15px;padding:10px 18px;background:#dbeafe;margin-bottom:7px;display:block;border:0;width:100%;text-align:left;border-radius:13px;margin-top:5px;transition:.12s;font-weight:700;}
+    .a-btn:active{background:#38bdf8;color:white;}
+    .status{font-size:14px;margin:9px 0;}
+    .endblock{background:#e0f2fe;padding:13px 20px; border-radius:13px;}
+    .lb th,.lb td{border:1px solid #38bdf833;padding:3px 8px;}
+    .lb th{background:#e0f2fe;}
+    .btn{padding:6.5px 17px;font-size:14px;border-radius:9px;background:#bae6fd;border:0;font-weight:700;margin-right:9px;margin-top:6px;}
+    .input{padding:6px 11px;border-radius:7px;border:1px solid #bae6fd;}
+  </style>
+</head>
+<body>
+<div class="main">
+  <h1>Formula Sprint <span class="chip">Формула жарыс</span></h1>
+  <div class="sprint" id="sprintArea"></div>
+  <div class="status" id="status"></div>
+  <div id="endblock" style="display:none;"></div>
+  <hr>
+  <b>Жетістіктер:</b>
+  <div id="lb"></div>
+  <p><a href="index.html">← Басты бет</a></p>
+</div>
+<script>
+const quiz=[
+  {txt:"aₙ = a₁ + (n−1)d", corr:"Арифметикалық прогрессия мүшесі", opts:["Геометриялық прогрессия мүшесі","Арифметикалық прогрессия мүшесі","Шеңбер формуласы"]},
+  {txt:"Sₙ = b₁(qⁿ−1)/(q−1)", corr:"Геометриялық прогрессия қосындысы", opts:["Геометриялық прогрессия қосындысы","Арифметикалық прогрессия қосындысы","Квадрат периметрі"]},
+  {txt:"y = kx + b", corr:"Сызықтық функция", opts:["Квадраттық функция","Сызықтық функция","Прогрессия формуласы"]},
+  {txt:"sin² α + cos² α = ...", corr:"1", opts:["1","sin α","cos² α"]},
+  {txt:"S_үшб=½·a·h", corr:"Үшбұрыш ауданы", opts:["Үшбұрыш ауданы","Төртбұрыш ауданы","Шеңбер ұзындығы"]},
+  {txt:"bₙ = b₁·qⁿ⁻¹",corr:"Геометриялық прогрессия мүшесі",opts:["Геометриялық прогрессия мүшесі","Арифметикалық прогрессия мүшесі","Функция"]},
+  {txt:"S_шең = πr²",corr:"Шеңбер ауданы",opts:["Периметр","Шеңбер ауданы","Квадрат"]},
+];
+let i=0, score=0,start=0, order=[...Array(quiz.length).keys()].sort(()=>Math.random()-.5);
+function showq(){
+  let qidx=order[i],q=quiz[qidx];
+  let html=`<div class="q">${q.txt}</div>`;
+  let opts=[...q.opts].sort(()=>Math.random()-.5);
+  opts.forEach(op=>{
+    html+=`<button class='a-btn' onclick='answ("${qidx}","${op.replace(/"/g,"&quot;")}")'>${op}</button>`;
+  });
+  sprintArea.innerHTML=html;
+  status.textContent=`Сұрақ ${i+1}/${quiz.length}`;
+}
+function answ(qi,ans){
+  let correct=quiz[qi].corr;
+  if(ans===correct)score++;
+  i++;
+  if(i<quiz.length){showq();}
+  else endquiz();
+}
+function endquiz(){
+  let t = Math.round((Date.now()-start)/1000);
+  sprintArea.innerHTML="";
+  status.textContent="Бітті!";
+  endblock.style.display="block";
+  endblock.innerHTML=`<div class='endblock'><b>Дұрыс жауап: ${score}/${quiz.length}</b><br>Уақыты: <b>${t}</b> сек.<br>
+  <label>Атыңыз: <input class=input id=username></label>
+  <button class=btn onclick='saveScore(${score},${t})'>Сақтау</button>
+  <button class=btn onclick='reset()'>Қайталау</button>
+  </div>`;
+}
+function reset(){i=0;score=0;order=[...Array(quiz.length).keys()].sort(()=>Math.random()-.5);endblock.style.display="none";showq();start=Date.now();}
+function saveScore(score,time){
+  let user=document.getElementById('username').value.trim();
+  if(!user)return;
+  let arr=JSON.parse(localStorage.getItem("formulasprint_leader")||"[]");
+  arr.push({user,score,time,date:new Date().toLocaleDateString()});
+  arr=arr.sort((a,b)=>b.score-a.score||(a.time-b.time)).slice(0,7);
+  localStorage.setItem("formulasprint_leader",JSON.stringify(arr));
+  showlb();
+  document.getElementById('endblock').innerHTML="<b>Жетістік сақталды!</b> <button class=btn onclick='reset()'>Қайталау</button>";
+}
+function showlb(){
+  let arr=JSON.parse(localStorage.getItem("formulasprint_leader")||"[]");
+  let html=`<table class=lb><tr><th>Аты</th><th>Дұрыс</th><th>Уақыты (сек)</th><th>Күні</th></tr>`;
+  arr.forEach(r=>html+=`<tr><td>${r.user}</td><td>${r.score}</td><td>${r.time}</td><td>${r.date}</td></tr>`);
+  html+="</table>";
+  document.getElementById('lb').innerHTML=html;
+}
+showlb();reset();
+</script>
+</body>
+</html>

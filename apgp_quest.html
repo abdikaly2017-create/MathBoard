@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <title>AP/GP Quest — есеп, ойын</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <style>
+    body{margin:0;font-family:sans-serif;background:#fff0;}
+    .main{max-width:670px;margin:24px auto;padding:26px 11px 30px 11px;background:#f9fafb;border-radius:20px;box-shadow:0 8px 36px #81e6d918;}
+    h1{margin:0 0 10px 0;color:#0ea5e9;}
+    .chip{background:#bae6fd;font-weight:700;border-radius:999px;padding:4px 9px;margin-right:12px;}
+    .questblock{background:#fff;padding:16px 18px 17px 18px;border-radius:13px;}
+    .q{font-size:18px;margin:18px 0 9px 0;font-weight:700;}
+    .input{padding:7px 11px;border-radius:7px;width:90px;}
+    .btn{padding:8px 17px;font-size:14px;border-radius:10px;background:#bae6fd;border:0;font-weight:700;}
+    .status{font-size:14px;margin:10px 0;}
+    .endblock{background:#bae6fd;padding:13px 13px;border-radius:13px;}
+    .main a{font-size:13px;}
+  </style>
+</head>
+<body>
+<div class="main">
+  <h1>AP/GP Quest <span class="chip">Ойындағы есептер</span></h1>
+  <div class="questblock" id="game"></div>
+  <div class="status" id="status"></div>
+  <div id="endblock" style="display:none;"></div>
+  <p><a href="index.html">← Басты бет</a></p>
+</div>
+<script>
+const tasks=[
+  {type:"ap",q:"AP: a₁=3, d=5, n=7. a₇=?",a:33},
+  {type:"ap",q:"AP: a₁=2, d=7, n=8. a₈=?",a:51},
+  {type:"ap",q:"AP: a₁=4, d=−3, n=6. a₆=?",a:-11},
+  {type:"ap",q:"AP: a₁=12, d=−4, n=4. S₄=?",a:24},
+  {type:"gp",q:"GP: b₁=3, q=2, n=5. b₅=?",a:48},
+  {type:"gp",q:"GP: b₁=2, q=−3, n=4. S₄=?",a:2},
+  {type:"gp",q:"GP: b₁=5, q=8, n=3. b₃=?",a:320},
+  {type:"gp",q:"GP: b₁=1, q=0,5, n=5. S₅=?",a:1.9375}
+];
+let score=0, idx=0, order=[...Array(tasks.length).keys()].sort(()=>Math.random()-.5);
+function showQ(){
+  let i=order[idx],t=tasks[i];
+  game.innerHTML=`<div class=q>${t.q}</div>
+  <label>Жауап: <input class=input id=guess></label>
+  <button class=btn onclick='submit()'>Тексеру</button>`;
+  status.textContent=`Есеп ${idx+1}/${tasks.length}`;
+}
+function submit(){
+  let t=tasks[order[idx]], u=guess.value.replace(",","."),v=Number(u);
+  let correct=(Math.abs(v-t.a)<0.01);
+  if(correct) score++;
+  idx++;
+  if(idx<tasks.length) showQ();
+  else endquiz();
+}
+function endquiz(){
+  game.innerHTML="";
+  endblock.style.display="block";
+  endblock.innerHTML=
+    `<div class='endblock'><b>Дұрыс жауап: ${score}/${tasks.length}</b><br>
+    <button class=btn onclick='reset()'>Қайталау</button></div>`;
+  status.textContent = "Бітті!";
+}
+function reset(){score=0;idx=0;order=[...Array(tasks.length).keys()].sort(()=>Math.random()-.5);endblock.style.display="none";showQ();}
+reset();
+</script>
+</body>
+</html>

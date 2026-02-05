@@ -1,0 +1,1077 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Олимпиада (20 есеп)</title>
+  <style>
+    :root{
+      --bg:#0b1020; --card:#121a33; --text:#e9ecff; --muted:#aab2e6;
+      --accent:#6ea8fe; --accent2:#7ee0c3; --border:rgba(255,255,255,.10);
+      --danger:#ff6b6b;
+    }
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(180deg,#070b18,#0b1020);color:var(--text)}
+    .wrap{max-width:980px;margin:0 auto;padding:22px 16px 56px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+    h1{font-size:20px;margin:0}
+    a.back{color:var(--text);text-decoration:none;border:1px solid var(--border);padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.04)}
+    a.back:hover{background:rgba(255,255,255,.07)}
+    .hint{color:var(--muted);font-size:13px;margin:10px 0 16px}
+    .q{
+      background:rgba(18,26,51,.92);border:1px solid var(--border);
+      border-radius:16px;padding:16px;margin:12px 0;
+    }
+    .qhead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    .tag{font-size:12px;color:var(--muted);border:1px solid var(--border);padding:4px 10px;border-radius:999px}
+    .title{margin:0 0 8px;font-size:16px}
+    .stmt{white-space:pre-wrap;line-height:1.45}
+    .btnrow{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+    button{
+      cursor:pointer;border-radius:12px;padding:9px 12px;border:1px solid var(--border);
+      background:rgba(110,168,254,.12);color:var(--text);
+    }
+    button:hover{background:rgba(110,168,254,.18)}
+    .altbtn{background:rgba(126,224,195,.10);border-color:rgba(126,224,195,.30)}
+    .altbtn:hover{background:rgba(126,224,195,.16)}
+    .ghost{background:rgba(255,255,255,.04)}
+    .ghost:hover{background:rgba(255,255,255,.07)}
+    .panel{
+      display:none;margin-top:12px;border-top:1px dashed var(--border);padding-top:12px
+    }
+    .panel.open{display:block}
+    .subttl{margin:10px 0 6px;font-size:14px}
+    .bul{margin:6px 0 0 18px;color:var(--muted)}
+    .sol{white-space:pre-wrap;line-height:1.5}
+    .kriter{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;padding:10px;margin-top:10px}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    hr.sep{border:none;border-top:1px solid var(--border);margin:14px 0 0}
+  </style>
+
+  <!-- MathJax: формулалар дұрыс шығуы үшін -->
+  <script>
+    window.MathJax = { tex: { inlineMath: [['\$','\$'], ['$', '$']] } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <h1>Олимпиада • 20 есеп (7–8 сынып)</h1>
+      <a class="back" href="index.html">← Индекс</a>
+    </div>
+
+    <div class="hint">
+      Әр есептің басында тек <b>шарт</b> беріледі. Төмендегі батырмалар арқылы
+      <b>«Шығарылу жолы»</b> және <b>«Альтернативті варианттар»</b> бөлек ашылады.
+    </div>
+
+    <!-- 1 -->
+    <section class="q" id="q1">
+      <div class="qhead">
+        <div>
+          <h2 class="title">1-есеп</h2>
+          <div class="tag">Алгебра • Жүйе</div>
+        </div>
+      </div>
+      <div class="stmt">
+$$
+\begin{cases}
+x+y=10\\
+x^2+y^2=58
+\end{cases}
+$$
+$x,y$ мәндерін тап.
+      </div>
+
+      <div class="btnrow">
+        <button data-toggle="sol1">Шығарылу жолы</button>
+        <button class="altbtn" data-toggle="alt1">Альтернативті варианттар</button>
+        <button class="ghost" data-action="close" data-close="sol1,alt1">Жабу</button>
+      </div>
+
+      <div class="panel" id="sol1">
+        <div class="subttl"><b>Идея:</b> $(x+y)^2=x^2+2xy+y^2$ арқылы $xy$ табу.</div>
+
+        <div class="subttl"><b>Тәсіл 1 (қосынды-көбейтінді):</b></div>
+        <div class="sol">
+$$
+(x+y)^2=x^2+2xy+y^2 \Rightarrow 100=58+2xy \Rightarrow xy=21.
+$$
+$$
+t^2-10t+21=0 \Rightarrow (t-3)(t-7)=0.
+$$
+Сонда $(x,y)=(3,7)$ немесе $(7,3)$.
+        </div>
+
+        <div class="subttl"><b>Тәсіл 2 (айырма арқылы):</b></div>
+        <div class="sol">
+$$
+x^2+y^2=\frac{(x+y)^2+(x-y)^2}{2}\Rightarrow 58=\frac{100+(x-y)^2}{2}
+$$
+$$
+(x-y)^2=16 \Rightarrow x-y=\pm4.
+$$
+$x+y=10$ ⇒ $(7,3)$ немесе $(3,7)$.
+        </div>
+
+        <div class="kriter">
+          <div class="subttl"><b>Бағалау критерийі (7 балл):</b></div>
+          <ul class="bul">
+            <li>2 б: байланыс/түрлендіруді дұрыс қолдану</li>
+            <li>2 б: теңдеу/жүйені дұрыс құру</li>
+            <li>2 б: шешімдерді дұрыс табу</li>
+            <li>1 б: екі жұпты толық жауап ретінде жазу</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="alt1">
+        <div class="sol">
+1) $x+y=12,\; x^2+y^2=80$  
+2) $x+y=9,\; x^2+y^2=41$
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section class="q" id="q2">
+      <div class="qhead">
+        <div>
+          <h2 class="title">2-есеп</h2>
+          <div class="tag">Алгебра • Бүтін шешім</div>
+        </div>
+      </div>
+      <div class="stmt">
+$$
+x^2-5x+6=y^2
+$$
+теңдеуінің бүтін $(x,y)$ шешімдерін тап.
+      </div>
+
+      <div class="btnrow">
+        <button data-toggle="sol2">Шығарылу жолы</button>
+        <button class="altbtn" data-toggle="alt2">Альтернативті варианттар</button>
+        <button class="ghost" data-action="close" data-close="sol2,alt2">Жабу</button>
+      </div>
+
+      <div class="panel" id="sol2">
+        <div class="subttl"><b>Идея:</b> квадрат толықтыру немесе жіктеу.</div>
+
+        <div class="subttl"><b>Тәсіл 1 (квадрат толықтыру):</b></div>
+        <div class="sol">
+$$
+x^2-5x+6=\left(x-\frac52\right)^2-\frac14 \Rightarrow 4y^2=(2x-5)^2-1
+$$
+$$
+(2x-5)^2-(2y)^2=1 \Rightarrow (2x-5-2y)(2x-5+2y)=1.
+$$
+Тек $(1,1)$ немесе $(-1,-1)$:  
+$(x,y)=(3,0)$ және $(2,0)$.
+        </div>
+
+        <div class="subttl"><b>Тәсіл 2 (жіктеу):</b></div>
+        <div class="sol">
+$$
+x^2-5x+6=(x-2)(x-3)=y^2.
+$$
+Айырмасы 1 болатын екі көбейткіштің көбейтіндісі квадрат болса, мүмкін нұсқа тек $0$ мен $1$.  
+Сондықтан $x=2$ немесе $x=3$, ал $y=0$.
+        </div>
+
+        <div class="kriter">
+          <div class="subttl"><b>Бағалау (7 балл):</b></div>
+          <ul class="bul">
+            <li>2 б: дұрыс түрлендіру</li>
+            <li>2 б: көбейткіштер теңдеуін талдау</li>
+            <li>2 б: барлық шешімдерді табу</li>
+            <li>1 б: толық жауап</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="alt2">
+        <div class="sol">
+1) $(x-1)(x-4)=y^2$  
+2) $x^2-7x+12=y^2$
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="q" id="q3">
+      <div class="qhead">
+        <div>
+          <h2 class="title">3-есеп</h2>
+          <div class="tag">Сан теориясы • Бөлінгіштік</div>
+        </div>
+      </div>
+      <div class="stmt">$n^2+3n+2$ өрнегі барлық бүтін $n$ үшін 2-ге бөлінетінін дәлелде.</div>
+
+      <div class="btnrow">
+        <button data-toggle="sol3">Шығарылу жолы</button>
+        <button class="altbtn" data-toggle="alt3">Альтернативті варианттар</button>
+        <button class="ghost" data-action="close" data-close="sol3,alt3">Жабу</button>
+      </div>
+
+      <div class="panel" id="sol3">
+        <div class="subttl"><b>Тәсіл 1 (жіктеу):</b></div>
+        <div class="sol">$(n^2+3n+2)=(n+1)(n+2)$. Көрші екі санның біреуі жұп ⇒ көбейтінді жұп.</div>
+
+        <div class="subttl"><b>Тәсіл 2 (mod 2):</b></div>
+        <div class="sol">$n\equiv0,1\pmod2$. Екі жағдайда да $n^2+3n+2\equiv n^2+n\equiv n(n+1)\equiv0\pmod2$.</div>
+
+        <div class="kriter">
+          <div class="subttl"><b>Бағалау (7 балл):</b></div>
+          <ul class="bul">
+            <li>2 б: дұрыс идея таңдау</li>
+            <li>3 б: дәлелдеуді толық жүргізу</li>
+            <li>2 б: қорытынды</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="alt3">
+        <div class="sol">
+1) $n^2+n$ 2-ге бөлінеді  
+2) $n^2+5n+6$ 2-ге бөлінеді
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section class="q" id="q4">
+      <div class="qhead">
+        <div>
+          <h2 class="title">4-есеп</h2>
+          <div class="tag">Алгебра • Теңсіздік</div>
+        </div>
+      </div>
+      <div class="stmt">$a,b,c&gt;0$ болса, дәлелде: $(a+b)(b+c)(c+a)\ge 8abc$.</div>
+
+      <div class="btnrow">
+        <button data-toggle="sol4">Шығарылу жолы</button>
+        <button class="altbtn" data-toggle="alt4">Альтернативті варианттар</button>
+        <button class="ghost" data-action="close" data-close="sol4,alt4">Жабу</button>
+      </div>
+
+      <div class="panel" id="sol4">
+        <div class="subttl"><b>Тәсіл 1 (AM-GM):</b></div>
+        <div class="sol">
+$a+b\ge2\sqrt{ab}$, $b+c\ge2\sqrt{bc}$, $c+a\ge2\sqrt{ca}$.  
+Көбейтсек: $(a+b)(b+c)(c+a)\ge 8\sqrt{ab\cdot bc\cdot ca}=8abc$.
+        </div>
+
+        <div class="subttl"><b>Тәсіл 2 (теңдік жағдайын талдау):</b></div>
+        <div class="sol">Теңдік $a=b=c$ кезінде орындалады. AM-GM — ең қысқа стандарт дәлел.</div>
+
+        <div class="kriter">
+          <div class="subttl"><b>Бағалау (7 балл):</b></div>
+          <ul class="bul">
+            <li>3 б: AM-GM дұрыс қолдану</li>
+            <li>2 б: дұрыс көбейту/ықшамдау</li>
+            <li>1 б: теңдік шарты</li>
+            <li>1 б: қорытынды</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="alt4">
+        <div class="sol">
+1) $(a+b+c)^3\ge27abc$  
+2) $(a+b)^2\ge4ab$
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section class="q" id="q5">
+      <div class="qhead">
+        <div>
+          <h2 class="title">5-есеп</h2>
+          <div class="tag">Комбинаторика • Санау</div>
+        </div>
+      </div>
+      <div class="stmt">1-ден 999-ға дейінгі сандардың ішінде цифрларының қосындысы 9-ға бөлінетін қанша сан бар?</div>
+
+      <div class="btnrow">
+        <button data-toggle="sol5">Шығарылу жолы</button>
+        <button class="altbtn" data-toggle="alt5">Альтернативті варианттар</button>
+        <button class="ghost" data-action="close" data-close="sol5,alt5">Жабу</button>
+      </div>
+
+      <div class="panel" id="sol5">
+        <div class="subttl"><b>Тәсіл 1 (000–999 біркелкілік):</b></div>
+        <div class="sol">
+000–999 аралығында 1000 сан бар. Цифрлар қосындысының mod 9 қалдықтары «біркелкі» таралады.  
+1000 = 9·111 + 1 болғандықтан, қалдық 0 болатындар саны 112 (артық 1 — 000).  
+Сонда 1–999 ішінде: 112−1 = 111.
+        </div>
+
+        <div class="subttl"><b>Тәсіл 2 (идея):</b></div>
+        <div class="sol">Санды үш цифрға бөліп, қалдықтардың симметриясын қолдануға болады, бірақ ең қысқасы — 1-тәсіл.</div>
+
+        <div class="kriter">
+          <div class="subttl"><b>Бағалау (7 балл):</b></div>
+          <ul class="bul">
+            <li>3 б: біркелкі таралу идеясын негіздеу</li>
+            <li>2 б: 1000=9·111+1 қолдану</li>
+            <li>1 б: 000-ді алып тастау</li>
+            <li>1 б: жауап</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="alt5">
+        <div class="sol">
+1) 1–9999 аралығында цифр қосындысы 9-ға бөлінетіндер  
+2) цифр қосындысы 3-ке бөлінетіндер саны
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section class="q" id="q6">
+      <div class="qhead">
+        <div>
+          <h2 class="title">6-есеп</h2>
+          <div class="tag">Геометрия • Медиана</div>
+        </div>
+      </div>
+      <div class="stmt">Үшбұрышта медианалар бір нүктеде қиылысып, бір-бірін 2:1 қатынасында бөлетінін дәлелде.</div>
+
+      <div class="btnrow">
+        <button data-toggle="sol6">Шығарылу жолы</button>
+        <button class="altbtn" data-toggle="alt6">Альтернативті варианттар</button>
+        <button class="ghost" data-action="close" data-close="sol6,alt6">Жабу</button>
+      </div>
+
+      <div class="panel" id="sol6">
+        <div class="subttl"><b>Тәсіл 1 (координата):</b></div>
+        <div class="sol">
+$A(0,0), B(1,0), C(0,1)$ деп алайық.  
+$M$ — $BC$ ортасы: $(\tfrac12,\tfrac12)$, $N$ — $AC$ ортасы: $(0,\tfrac12)$.  
+$AM$ және $BN$ қиылысуын табу арқылы параметр $t=\frac23$ шығады → медиана 2:1 бөлінеді.
+        </div>
+
+        <div class="subttl"><b>Тәсіл 2 (параллель түзулер):</b></div>
+        <div class="sol">Көмекші параллельдер арқылы ұқсас үшбұрыштардан қатынас шығарып, қиылысу нүктесінің 2:1 екенін дәлелдейміз.</div>
+
+        <div class="kriter">
+          <div class="subttl"><b>Бағалау (7 балл):</b></div>
+          <ul class="bul">
+            <li>2 б: дұрыс сызба/модель</li>
+            <li>3 б: қиылысу және қатынас шығару</li>
+            <li>1 б: 2:1 нақты көрсету</li>
+            <li>1 б: қорытынды</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="alt6">
+        <div class="sol">
+1) Биссектриса теоремасын дәлелде  
+2) Үшбұрыштың орта сызығы қасиеті
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 -->
+    <section class="q" id="q7">
+      <div class="qhead">
+        <div>
+          <h2 class="title">7-есеп</h2>
+          <div class="tag">Геометрия • Шеңбер</div>
+        </div>
+      </div>
+      <div class="stmt">Бір доғаға тірелген шеңберлік бұрыштар тең екенін дәлелде.</div>
+
+      <div class="btnrow">
+        <button data-toggle="sol7">Шығарылу жолы</button>
+        <button class="altbtn" data-toggle="alt7">Альтернативті варианттар</button>
+        <button class="ghost" data-action="close" data-close="sol7,alt7">Жабу</button>
+      </div>
+
+      <div class="panel" id="sol7">
+        <div class="subttl"><b>Тәсіл 1 (орталық бұрыш):</b></div>
+        <div class="sol">
+Бір доға $AB$ үшін орталық бұрыш $\angle AOB$ бірдей.  
+Шеңберлік бұрыш: $\angle ACB=\frac12\angle AOB$, $\angle ADB=\frac12\angle AOB$.  
+Сондықтан $\angle ACB=\angle ADB$.
+        </div>
+
+        <div class="subttl"><b>Тәсіл 2 (радиустар арқылы):</b></div>
+        <div class="sol">$OA=OB=OC=OD$ теңдіктерінен тең бүйірлі үшбұрыштар құрып, бұрыштарды қосу-алу арқылы да шығарылады.</div>
+
+        <div class="kriter">
+          <div class="subttl"><b>Бағалау (7 балл):</b></div>
+          <ul class="bul">
+            <li>2 б: дұрыс конфигурация</li>
+            <li>3 б: орталық бұрышпен байланыс</li>
+            <li>2 б: қорытынды</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="alt7">
+        <div class="sol">
+1) Диаметрге тірелген бұрыш 90°  
+2) Бір хордаға тірелген бұрыштар тең
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 -->
+    <section class="q" id="q8">
+      <div class="qhead">
+        <div>
+          <h2 class="title">8-есеп</h2>
+          <div class="tag">Логика</div>
+        </div>
+      </div>
+      <div class="stmt">
+Үш оқушы: А, В, С. Бірі ғана шын айтады, екеуі өтірік айтады.  
+А: «В шын айтады.»  
+В: «С өтірік айтады.»  
+С: «В өтірік айтады.»  
+Кім шын айтады?
+      </div>
+
+      <div class="btnrow">
+        <button data-toggle="sol8">Шығарылу жолы</button>
+        <button class="altbtn" data-toggle="alt8">Альтернативті варианттар</button>
+        <button class="ghost" data-action="close" data-close="sol8,alt8">Жабу</button>
+      </div>
+
+      <div class="panel" id="sol8">
+        <div class="subttl"><b>Тәсіл 1 (жағдайларды тексеру):</b></div>
+        <div class="sol">
+Егер В шын болса, онда С өтірік. Бірақ онда А да «В шын» деп шын айтады → 2 шын (болмайды).  
+Демек В өтірік. Онда С-ның «В өтірік» сөзі шын.  
+Жауап: С шын айтады.
+        </div>
+
+        <div class="subttl"><b>Тәсіл 2 (логикалық теңдеу):</b></div>
+        <div class="sol">
+$a,b,c\in\{0,1\}$, $a+b+c=1$.  
+А сөзі: $a=b$, В: $b=1-c$, С: $c=1-b$.  
+Осыдан $b=0,c=1,a=0$.
+        </div>
+
+        <div class="kriter">
+          <div class="subttl"><b>Бағалау (7 балл):</b></div>
+          <ul class="bul">
+            <li>2 б: шартты дұрыс оқу</li>
+            <li>3 б: қайшылық/кестелеу</li>
+            <li>1 б: тексеру</li>
+            <li>1 б: жауап</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="alt8">
+        <div class="sol">
+1) 4 адам: дәл екеуі шын айтады  
+2) «кемінде біреуі шын айтады» түрі
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 -->
+    <section class="q" id="q9">
+      <div class="qhead">
+        <div>
+          <h2 class="title">9-есеп</h2>
+          <div class="tag">Алгебра • Ықшамдау</div>
+        </div>
+      </div>
+      <div class="stmt">
+$$
+\frac{x^2-1}{x-1}-\frac{x^2-4}{x-2}
+$$
+өрнегін ықшамда (мүмкін болатын $x$ мәндерін көрсету).
+      </div>
+
+      <div class="btnrow">
+        <button data-toggle="sol9">Шығарылу жолы</button>
+        <button class="altbtn" data-toggle="alt9">Альтернативті варианттар</button>
+        <button class="ghost" data-action="close" data-close="sol9,alt9">Жабу</button>
+      </div>
+
+      <div class="panel" id="sol9">
+        <div class="subttl"><b>Тәсіл 1 (қысқарту):</b></div>
+        <div class="sol">
+ОДЗ: $x\ne1,2$.  
+$\frac{(x-1)(x+1)}{x-1}=x+1$, $\frac{(x-2)(x+2)}{x-2}=x+2$.  
+Айырмасы $-1$.
+        </div>
+
+        <div class="subttl"><b>Тәсіл 2 (ортақ бөлім):</b></div>
+        <div class="sol">Ортақ бөлімге келтіріп, қысқартудан кейін де $-1$ шығады.</div>
+
+        <div class="kriter">
+          <div class="subttl"><b>Бағалау (7 балл):</b></div>
+          <ul class="bul">
+            <li>2 б: жіктеу</li>
+            <li>2 б: ОДЗ</li>
+            <li>2 б: ықшамдау</li>
+            <li>1 б: жауап</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="alt9">
+        <div class="sol">
+1) $\frac{x^2-9}{x-3}-\frac{x^2-1}{x-1}$  
+2) $\frac{x^2-16}{x-4}+\frac{x^2-4}{x-2}$
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 -->
+    <section class="q" id="q10">
+      <div class="qhead">
+        <div>
+          <h2 class="title">10-есеп</h2>
+          <div class="tag">Сан теориясы • ЕҮОБ/ЕҮОК</div>
+        </div>
+      </div>
+      <div class="stmt">$\gcd(a,b)=12$, $\operatorname{lcm}(a,b)=180$. $a+b$-ның ең кіші мүмкін мәнін тап.</div>
+
+      <div class="btnrow">
+        <button data-toggle="sol10">Шығарылу жолы</button>
+        <button class="altbtn" data-toggle="alt10">Альтернативті варианттар</button>
+        <button class="ghost" data-action="close" data-close="sol10,alt10">Жабу</button>
+      </div>
+
+      <div class="panel" id="sol10">
+        <div class="subttl"><b>Тәсіл 1 (параметрлеу):</b></div>
+        <div class="sol">
+$a=12m, b=12n,\ \gcd(m,n)=1$.  
+$\text{lcm}(a,b)=12mn=180\Rightarrow mn=15$.  
+Коприм жұптар: (1,15), (3,5), (5,3), (15,1).  
+Қосынды минимумы: $12(3+5)=96$.
+        </div>
+
+        <div class="subttl"><b>Тәсіл 2 (бөлгіштерді қарау):</b></div>
+        <div class="sol">$mn=15$ жұптарын тексеріп, ең кіші $m+n$ — 8 (3+5).</div>
+
+        <div class="kriter">
+          <div class="subttl"><b>Бағалау (7 балл):</b></div>
+          <ul class="bul">
+            <li>2 б: дұрыс параметрлеу</li>
+            <li>2 б: $mn=15$ шығару</li>
+            <li>2 б: коприм жұптар</li>
+            <li>1 б: минимум/жауап</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="alt10">
+        <div class="sol">
+1) $\gcd=8,\ \text{lcm}=280$  
+2) $\gcd=6,\ \text{lcm}=504$
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 -->
+    <section class="q" id="q11">
+      <div class="qhead">
+        <div>
+          <h2 class="title">11-есеп</h2>
+          <div class="tag">Геометрия • Пифагор кері</div>
+        </div>
+      </div>
+      <div class="stmt">Қабырғалары 7, 24, 25 болатын үшбұрыш тікбұрышты екенін дәлелде.</div>
+
+      <div class="btnrow">
+        <button data-toggle="sol11">Шығарылу жолы</button>
+        <button class="altbtn" data-toggle="alt11">Альтернативті варианттар</button>
+        <button class="ghost" data-action="close" data-close="sol11,alt11">Жабу</button>
+      </div>
+
+      <div class="panel" id="sol11">
+        <div class="subttl"><b>Тәсіл 1:</b></div>
+        <div class="sol">
+$7^2+24^2=49+576=625=25^2$.  
+Пифагор теоремасының кері бойынша үшбұрыш тікбұрышты.
+        </div>
+
+        <div class="subttl"><b>Тәсіл 2 (аудан):</b></div>
+        <div class="sol">Герон формуласы арқылы ауданын тауып, $\frac12\cdot 7\cdot 24$ мәнімен сәйкестігін көрсетуге болады.</div>
+
+        <div class="kriter">
+          <div class="subttl"><b>Бағалау (7 балл):</b></div>
+          <ul class="bul">
+            <li>3 б: теңдікті дұрыс тексеру</li>
+            <li>2 б: кері теореманы дұрыс қолдану</li>
+            <li>2 б: қорытынды</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="alt11">
+        <div class="sol">
+1) 9, 40, 41  
+2) 11, 60, 61
+        </div>
+      </div>
+    </section>
+
+    <!-- 12 -->
+    <section class="q" id="q12">
+      <div class="qhead">
+        <div>
+          <h2 class="title">12-есеп</h2>
+          <div class="tag">Алгебра • Прогрессия</div>
+        </div>
+      </div>
+      <div class="stmt">Арифметикалық прогрессияда $a_3=11$, $a_8=31$. $a_1$ мен $d$-ны тап, $a_{20}$-ны есепте.</div>
+
+      <div class="btnrow">
+        <button data-toggle="sol12">Шығарылу жолы</button>
+        <button class="altbtn" data-toggle="alt12">Альтернативті варианттар</button>
+        <button class="ghost" data-action="close" data-close="sol12,alt12">Жабу</button>
+      </div>
+
+      <div class="panel" id="sol12">
+        <div class="subttl"><b>Тәсіл 1:</b></div>
+        <div class="sol">
+$a_n=a_1+(n-1)d$.  
+$a_1+2d=11$, $a_1+7d=31$ ⇒ $5d=20\Rightarrow d=4$.  
+$a_1=3$. $a_{20}=3+19\cdot 4=79$.
+        </div>
+
+        <div class="subttl"><b>Тәсіл 2:</b></div>
+        <div class="sol">Орташа өсім: $\frac{31-11}{8-3}=4\Rightarrow d=4$. Қалғаны солай.</div>
+
+        <div class="kriter">
+          <div class="subttl"><b>Бағалау (7 балл):</b></div>
+          <ul class="bul">
+            <li>2 б: формула</li>
+            <li>2 б: жүйе шешу</li>
+            <li>2 б: $a_{20}$</li>
+            <li>1 б: жауап</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="alt12">
+        <div class="sol">
+1) $a_4=5,\ a_{10}=23$  
+2) $a_2=-1,\ a_9=20$
+        </div>
+      </div>
+    </section>
+
+    <!-- 13 -->
+    <section class="q" id="q13">
+      <div class="qhead">
+        <div>
+          <h2 class="title">13-есеп</h2>
+          <div class="tag">Комбинаторика • Тор</div>
+        </div>
+      </div>
+      <div class="stmt">4×4 торда сол төменгі бұрыштан оң жоғарғы бұрышқа тек жоғары/оңға жүріп неше түрлі ең қысқа жол бар?</div>
+
+      <div class="btnrow">
+        <button data-toggle="sol13">Шығарылу жолы</button>
+        <button class="altbtn" data-toggle="alt13">Альтернативті варианттар</button>
+        <button class="ghost" data-action="close" data-close="sol13,alt13">Жабу</button>
+      </div>
+
+      <div class="panel" id="sol13">
+        <div class="subttl"><b>Тәсіл 1 (комбинация):</b></div>
+        <div class="sol">
+4 оңға + 4 жоғары = 8 қадам. Оңға қадамдарының орны: $\binom{8}{4}=70$.
+        </div>
+
+        <div class="subttl"><b>Тәсіл 2 (динамика):</b></div>
+        <div class="sol">Әр нүктедегі сан = солдан келген + төменнен келген (Паскаль). Соңы 70.</div>
+
+        <div class="kriter">
+          <div class="subttl"><b>Бағалау (7 балл):</b></div>
+          <ul class="bul">
+            <li>3 б: 8 қадам моделін құру</li>
+            <li>2 б: $\binom{8}{4}$ есептеу</li>
+            <li>2 б: қорытынды</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="alt13">
+        <div class="sol">
+1) 3×5 тор  
+2) Белгілі бір ұяшық арқылы өту шартымен
+        </div>
+      </div>
+    </section>
+
+    <!-- 14 -->
+    <section class="q" id="q14">
+      <div class="qhead">
+        <div>
+          <h2 class="title">14-есеп</h2>
+          <div class="tag">Сан теориясы • Mod</div>
+        </div>
+      </div>
+      <div class="stmt">Ешбір бүтін $n$ үшін $n^2+1$ саны 4-ке бөлінбейтінін дәлелде.</div>
+
+      <div class="btnrow">
+        <button data-toggle="sol14">Шығарылу жолы</button>
+        <button class="altbtn" data-toggle="alt14">Альтернативті варианттар</button>
+        <button class="ghost" data-action="close" data-close="sol14,alt14">Жабу</button>
+      </div>
+
+      <div class="panel" id="sol14">
+        <div class="subttl"><b>Тәсіл 1 (mod 4):</b></div>
+        <div class="sol">
+$n\equiv 0,1,2,3\pmod4$. Квадраттар: $0,1,0,1$.  
+Сондықтан $n^2+1\equiv1$ немесе $2\pmod4$, 0 шықпайды.
+        </div>
+
+        <div class="subttl"><b>Тәсіл 2 (жұп/тақ):</b></div>
+        <div class="sol">
+$n=2k\Rightarrow n^2+1\equiv1\pmod4$.  
+$n=2k+1\Rightarrow n^2+1\equiv2\pmod4$.
+        </div>
+
+        <div class="kriter">
+          <div class="subttl"><b>Бағалау (7 балл):</b></div>
+          <ul class="bul">
+            <li>3 б: жағдайларға бөлу</li>
+            <li>3 б: қалдықтарды табу</li>
+            <li>1 б: қорытынды</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="alt14">
+        <div class="sol">
+1) $n^2+2$ 4-ке бөлінбейді  
+2) $n^2+3$ 8-ге бөлінбейді (талда)
+        </div>
+      </div>
+    </section>
+
+    <!-- 15 -->
+    <section class="q" id="q15">
+      <div class="qhead">
+        <div>
+          <h2 class="title">15-есеп</h2>
+          <div class="tag">Геометрия • Биссектриса</div>
+        </div>
+      </div>
+      <div class="stmt">Үшбұрышта $AD$ — бұрыш қақ бөлгіш, $D\in BC$. Дәлелде: $\frac{BD}{DC}=\frac{AB}{AC}$.</div>
+
+      <div class="btnrow">
+        <button data-toggle="sol15">Шығарылу жолы</button>
+        <button class="altbtn" data-toggle="alt15">Альтернативті варианттар</button>
+        <button class="ghost" data-action="close" data-close="sol15,alt15">Жабу</button>
+      </div>
+
+      <div class="panel" id="sol15">
+        <div class="subttl"><b>Тәсіл 1 (аудан қатынасы):</b></div>
+        <div class="sol">
+$$
+\frac{S_{ABD}}{S_{ACD}}=\frac{BD}{DC}
+$$
+(биіктік бірдей).  
+Ал
+$$
+\frac{S_{ABD}}{S_{ACD}}=\frac{AB\sin\angle BAD}{AC\sin\angle CAD}.
+$$
+$\angle BAD=\angle CAD\Rightarrow$ синустар тең ⇒ $\frac{BD}{DC}=\frac{AB}{AC}$.
+        </div>
+
+        <div class="subttl"><b>Тәсіл 2 (ұқсастық/шеңбер идеясы):</b></div>
+        <div class="sol">Қосымша салулар арқылы ұқсас үшбұрыштар құрып, сол қатынасқа келтіруге болады.</div>
+
+        <div class="kriter">
+          <div class="subttl"><b>Бағалау (7 балл):</b></div>
+          <ul class="bul">
+            <li>2 б: аудан қатынасын дұрыс жазу</li>
+            <li>3 б: синус арқылы қолдану</li>
+            <li>1 б: биссектриса шартын пайдалану</li>
+            <li>1 б: қорытынды</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="alt15">
+        <div class="sol">
+1) $\frac{BD}{BC}$ табу (берілген қабырғалармен)  
+2) Сыртқы биссектрисаға есеп
+        </div>
+      </div>
+    </section>
+
+    <!-- 16 -->
+    <section class="q" id="q16">
+      <div class="qhead">
+        <div>
+          <h2 class="title">16-есеп</h2>
+          <div class="tag">Алгебра • Модуль</div>
+        </div>
+      </div>
+      <div class="stmt">$|x-2|+|x+1|=7$ теңдеуін шеш.</div>
+
+      <div class="btnrow">
+        <button data-toggle="sol16">Шығарылу жолы</button>
+        <button class="altbtn" data-toggle="alt16">Альтернативті варианттар</button>
+        <button class="ghost" data-action="close" data-close="sol16,alt16">Жабу</button>
+      </div>
+
+      <div class="panel" id="sol16">
+        <div class="subttl"><b>Тәсіл 1 (аралықтарға бөлу):</b></div>
+        <div class="sol">
+Нүктелер: $-1$, $2$.  
+1) $x\ge2$: $(x-2)+(x+1)=7\Rightarrow x=4$.  
+2) $-1\le x\le2$: $(2-x)+(x+1)=3$ → шешім жоқ.  
+3) $x\le-1$: $(2-x)+(-x-1)=7\Rightarrow x=-3$.  
+Жауап: $-3,4$.
+        </div>
+
+        <div class="subttl"><b>Тәсіл 2 (геометриялық):</b></div>
+        <div class="sol">Сан түзудегі $-1$ және $2$ нүктелеріне дейінгі қашықтықтардың қосындысы 7 болатын нүктелер – екі шешім.</div>
+
+        <div class="kriter">
+          <div class="subttl"><b>Бағалау (7 балл):</b></div>
+          <ul class="bul">
+            <li>3 б: аралықтарды дұрыс бөлу</li>
+            <li>2 б: теңдеулерді шешу</li>
+            <li>1 б: тексеру</li>
+            <li>1 б: жауап</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="alt16">
+        <div class="sol">
+1) $|x-5|+|x+2|=10$  
+2) $|2x-1|+|x+3|=8$
+        </div>
+      </div>
+    </section>
+
+    <!-- 17 -->
+    <section class="q" id="q17">
+      <div class="qhead">
+        <div>
+          <h2 class="title">17-есеп</h2>
+          <div class="tag">Инвариант • Домино</div>
+        </div>
+      </div>
+      <div class="stmt">8×8 тақтадан қарама-қарсы екі бұрыш ұясын қиып тастады. Қалған 62 ұяны 1×2 доминомен толық жабуға бола ма?</div>
+
+      <div class="btnrow">
+        <button data-toggle="sol17">Шығарылу жолы</button>
+        <button class="altbtn" data-toggle="alt17">Альтернативті варианттар</button>
+        <button class="ghost" data-action="close" data-close="sol17,alt17">Жабу</button>
+      </div>
+
+      <div class="panel" id="sol17">
+        <div class="subttl"><b>Тәсіл 1 (бояу инварианты):</b></div>
+        <div class="sol">
+Шахматша бояйық. Әр домино 1 ақ + 1 қара жабады.  
+Қарама-қарсы бұрыштар бір түсті (екеуі де ақ). Оларды алып тастасақ: ақ 30, қара 32 (тең емес).  
+Сондықтан доминомен толық жабу <b>мүмкін емес</b>.
+        </div>
+
+        <div class="subttl"><b>Тәсіл 2:</b></div>
+        <div class="sol">Ақ-қара ұяшық санының айырмасы — сақталатын инвариант.</div>
+
+        <div class="kriter">
+          <div class="subttl"><b>Бағалау (7 балл):</b></div>
+          <ul class="bul">
+            <li>2 б: бояу идеясын енгізу</li>
+            <li>3 б: ақ/қара санын дұрыс есептеу</li>
+            <li>2 б: домино қасиеті және қорытынды</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="alt17">
+        <div class="sol">
+1) Бір түсті екі ұяшықты алып тастау жағдайы  
+2) 6×6 тақтаға ұқсас есеп
+        </div>
+      </div>
+    </section>
+
+    <!-- 18 -->
+    <section class="q" id="q18">
+      <div class="qhead">
+        <div>
+          <h2 class="title">18-есеп</h2>
+          <div class="tag">Геометрия • Тең бүйірлі</div>
+        </div>
+      </div>
+      <div class="stmt">$AB=AC$ тең бүйірлі үшбұрышта $A$-дан түсірілген биіктік $AD$ медиана және биссектриса екенін дәлелде.</div>
+
+      <div class="btnrow">
+        <button data-toggle="sol18">Шығарылу жолы</button>
+        <button class="altbtn" data-toggle="alt18">Альтернативті варианттар</button>
+        <button class="ghost" data-action="close" data-close="sol18,alt18">Жабу</button>
+      </div>
+
+      <div class="panel" id="sol18">
+        <div class="subttl"><b>Тәсіл 1 (үшбұрыштар теңдігі):</b></div>
+        <div class="sol">
+$\triangle ABD$ және $\triangle ACD$:  
+$AB=AC$, $AD$ ортақ, $\angle ADB=\angle ADC=90^\circ$.  
+(Гипотенуза-катет) бойынша тең ⇒ $BD=DC$ (медиана), $\angle BAD=\angle DAC$ (биссектриса).
+        </div>
+
+        <div class="subttl"><b>Тәсіл 2 (симметрия/аудан):</b></div>
+        <div class="sol">Тең бүйірлі үшбұрыш осьтік симметрияға ие; соған байланысты биіктік табанды қақ бөледі және бұрышты қақ бөледі.</div>
+
+        <div class="kriter">
+          <div class="subttl"><b>Бағалау (7 балл):</b></div>
+          <ul class="bul">
+            <li>3 б: теңдікті дәлелдеу</li>
+            <li>2 б: $BD=DC$</li>
+            <li>1 б: биссектриса қорытындысы</li>
+            <li>1 б: қорытынды</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="alt18">
+        <div class="sol">
+1) Тең бүйірлі үшбұрышта табан бұрыштары тең  
+2) Медиана=биіктік ⇒ тең бүйірлі екенін дәлелде
+        </div>
+      </div>
+    </section>
+
+    <!-- 19 -->
+    <section class="q" id="q19">
+      <div class="qhead">
+        <div>
+          <h2 class="title">19-есеп</h2>
+          <div class="tag">Алгебра • Экстремум</div>
+        </div>
+      </div>
+      <div class="stmt">$x+y=10$, $x,y&gt;0$. $xy$ көбейтіндісінің ең үлкен мәнін тап.</div>
+
+      <div class="btnrow">
+        <button data-toggle="sol19">Шығарылу жолы</button>
+        <button class="altbtn" data-toggle="alt19">Альтернативті варианттар</button>
+        <button class="ghost" data-action="close" data-close="sol19,alt19">Жабу</button>
+      </div>
+
+      <div class="panel" id="sol19">
+        <div class="subttl"><b>Тәсіл 1 (AM-GM):</b></div>
+        <div class="sol">
+$\frac{x+y}{2}\ge\sqrt{xy}\Rightarrow 5\ge\sqrt{xy}\Rightarrow xy\le25$.  
+Теңдік $x=y=5$.
+        </div>
+
+        <div class="subttl"><b>Тәсіл 2 (парабола):</b></div>
+        <div class="sol">
+$y=10-x\Rightarrow xy=x(10-x)=-x^2+10x$.  
+Төбесі $x=5\Rightarrow xy_{\max}=25$.
+        </div>
+
+        <div class="kriter">
+          <div class="subttl"><b>Бағалау (7 балл):</b></div>
+          <ul class="bul">
+            <li>3 б: дұрыс әдіс</li>
+            <li>2 б: максимумды табу</li>
+            <li>1 б: теңдік шарты</li>
+            <li>1 б: жауап</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="alt19">
+        <div class="sol">
+1) $x+y=16$ үшін $xy_{\max}$  
+2) $x+y=10$ үшін $x^2+y^2_{\min}$
+        </div>
+      </div>
+    </section>
+
+    <!-- 20 -->
+    <section class="q" id="q20">
+      <div class="qhead">
+        <div>
+          <h2 class="title">20-есеп</h2>
+          <div class="tag">Комбинаторика • Цифрлар</div>
+        </div>
+      </div>
+      <div class="stmt">1-ден 999-ға дейінгі сандардың ішінде цифрларының бәрі әртүрлі (қайталанбайтын) қанша сан бар?</div>
+
+      <div class="btnrow">
+        <button data-toggle="sol20">Шығарылу жолы</button>
+        <button class="altbtn" data-toggle="alt20">Альтернативті варианттар</button>
+        <button class="ghost" data-action="close" data-close="sol20,alt20">Жабу</button>
+      </div>
+
+      <div class="panel" id="sol20">
+        <div class="subttl"><b>Тәсіл 1 (разрядпен санау):</b></div>
+        <div class="sol">
+1-таңбалы: 9.  
+2-таңбалы: $9\cdot 9=81$.  
+3-таңбалы: $9\cdot 9\cdot 8=648$.  
+Барлығы: $9+81+648=738$.
+        </div>
+
+        <div class="subttl"><b>Тәсіл 2 (000–999 арқылы):</b></div>
+        <div class="sol">Үшорынды «кодтарды» санап, алдыңғы нөлдерге түзету енгізуге болады (ұзақтау).</div>
+
+        <div class="kriter">
+          <div class="subttl"><b>Бағалау (7 балл):</b></div>
+          <ul class="bul">
+            <li>2 б: 1-таңбалы</li>
+            <li>2 б: 2-таңбалы</li>
+            <li>2 б: 3-таңбалы</li>
+            <li>1 б: қосынды/жауап</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="alt20">
+        <div class="sol">
+1) 1–9999 үшін қайталанбайтын цифрлар  
+2) Цифрлары өспелі ретпен болатын сандар саны
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    // Toggle panels
+    function togglePanel(id){
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.classList.toggle('open');
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        MathJax.typesetPromise([el]);
+      }
+    }
+
+    // Close multiple panels by ids list "a,b,c"
+    function closePanels(list){
+      list.split(',').map(s => s.trim()).forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.classList.remove('open');
+      });
+    }
+
+    document.addEventListener('click', (e) => {
+      const t = e.target;
+      const id = t.getAttribute('data-toggle');
+      if(id) togglePanel(id);
+
+      const action = t.getAttribute('data-action');
+      if(action === 'close'){
+        const list = t.getAttribute('data-close') || '';
+        closePanels(list);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <title>Тригонометрия — тест, тақта, калькулятор</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root{--card:#fff;--bg:#f2f8fc;--muted:#64748b;--accent:#a21caf;--danger:#ef4444;--good:#22c55e;}
+    body{margin:0;background:var(--bg);font-family:sans-serif;}
+    .container{max-width:1120px;margin:0 auto;padding:20px 12px 65px;}
+    header{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:18px;padding:13px 15px;background:var(--card);box-shadow:0 1px 15px #9333ea15;border-radius:17px;}
+    @media(max-width:990px){header{flex-direction:column;}}
+    .title h1{margin:0 0 6px;font-size:21px;color:var(--accent);}
+    .title p{margin:1px 0 6px 0;color:var(--muted);font-size:13px;}
+    .badge-row{display:flex;gap:8px;margin-bottom:5px;}
+    .badge{padding:5px 8px;border-radius:99px;background:#f3e8ff;color:#a21caf;font-size:12px;}
+    nav a{font-size:13px;color:var(--accent);margin-right:10px;}
+    .timer-box{min-width:200px;padding:9px 13px;background:var(--accent);color:#fff;border-radius:14px;box-shadow:0 0 18px #9333ea19;}
+    .timer-time{font-size:25px;font-weight:900;}
+    .timer-status{font-size:13px;}
+    main{display:grid;grid-template-columns: 1.06fr 0.94fr;gap:14px;align-items:flex-start;}
+    @media(max-width:980px){main{grid-template-columns:1fr;}}
+    .card{background:var(--card);border-radius:16px;padding:14px 20px;margin-bottom:17px;box-shadow:0 2px 13px #a21caf24;}
+    h2{margin-top:0;}
+    h3{margin-top:15px;}
+    .formula{background:#f3e8ff;border-radius:999px;padding:4px 11px;font-size:13px;font-weight:700;color:#a21caf;}
+    .ex{background:#f7f7fc;padding:9px 13px 10px 17px;border-radius:10px;font-size:13px;}
+    ul{font-size:14px;}
+    .board{background:#f8fafc;padding:10px 9px 15px;border-radius:14px;margin-bottom:13px;}
+    .tools{display:flex;gap:7px;align-items:center;}
+    .tools .tool{padding:5px 9px;border-radius:9px;background:#f3e8ff;font-size:13px;font-weight:700;}
+    canvas{width:100%;height:170px;border-radius:12px;background:#faf5ff;border:1px solid #e8d5fa;}
+    .calc{background:#fbeafe;padding:11px 13px 13px;border-radius:12px;}
+    .calc input,.calc select{padding:7px 11px;border-radius:9px;border:1px solid #c4b5fd;margin-bottom:7px;}
+    .calc .out{background:var(--accent);color:#fff;padding:7px 9px;border-radius:7px;margin-top:4px;font-size:13px;}
+    .question{margin-bottom:12px;padding:9px 11px;background:#faf5ff;border-radius:11px;}
+    .question-title{font-weight:700;margin-bottom:6px;}
+    label.option{display:block;font-size:13px;margin-bottom:3px;}
+    .small-feedback{font-size:12px;margin-top:3px;}
+    .small-feedback.correct{color:var(--good);}
+    .small-feedback.wrong{color:var(--danger);}
+    .test-result{padding:8px 12px;border-radius:10px;background:#f3e8ff;font-size:13px;margin:8px 0;}
+    .match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .match-item{padding:7px 10px;border-radius:7px;background:#faf5ff;margin:5px 0;}
+    .match-item input{width:38px;border-radius:6px;}
+    .save-box{margin-top:10px;padding:7px 11px;border-radius:10px;background:#f6effc;display:flex;gap:7px;align-items:center;}
+    .save-box input{padding:6px 10px;font-size:13px;border-radius:999px;border:1px solid #d8b4fe;min-width:130px;}
+    .saved-table{width:100%;border-collapse:collapse;margin-top:7px;font-size:12px;}
+    .saved-table th,.saved-table td{border:1px solid #ecfeff;padding:4px 6px;}
+    .saved-table th{background:#e9d5ff;}
+    .chip{padding:5px 8px;border-radius:99px;background:#f3e8ff;font-size:12px;}
+    footer{margin-top:16px;}
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="title">
+      <h1>Тригонометрия — тест, тақта, калькулятор</h1>
+      <p>sin, cos, tg, негізгі формулалар, анықтамалар, мысал, 10 баллдық тест, тақта және калькулятор.</p>
+      <div class="badge-row">
+        <span class="badge">8–9 сынып</span>
+        <span class="badge">sin, cos, tg</span>
+        <span class="badge">15 мин тест</span>
+      </div>
+      <nav>
+        <a href="index.html">← Басты бет</a>
+        <a href="progressions.html">Прогрессиялар</a>
+        <a href="geometry_plane.html">Геометрия</a>
+      </nav>
+    </div>
+    <div class="timer-box">
+      <div style="font-size:12px;margin-bottom:3px;">Уақыты: 15 мин</div>
+      <div class="timer-time" id="timerDisplay">15:00</div>
+      <div class="timer-status" id="timerStatus">Орындау уақыты жүріп жатыр</div>
+      <button id="restartTimerBtn" style="margin-top:5px;border-radius:8px;padding:5px 9px;border:0;cursor:pointer;">⏱ 15 мин қайта қос</button>
+    </div>
+  </header>
+  <main>
+    <section>
+      <div class="card">
+        <h2>Теория және негізгі формулалар</h2>
+        <h3>1. Негізгі анықтамалар</h3>
+        <div><span class="formula">sin α = қарсы / гипотенуза</span> &nbsp; <span class="formula">cos α = іргелес / гипотенуза</span></div>
+        <div><span class="formula">tg α = қарсы / іргелес = sin α / cos α</span></div>
+        <div class="ex"><b>Мысал 1:</b> ABC тікбұрышты үшбұрышта a=5, b=12, c=13.<br>
+          sinA = 5/13; cosA = 12/13; tgA = 5/12.</div>
+        <div class="ex"><b>Мысал 2:</b> sin30°=1/2; cos60°=1/2; tg45°=1</div>
+        <h3>2. Формулалар</h3>
+        <div>
+          <span class="formula">sin²α + cos²α = 1</span>
+          <span class="formula">sin(α±β) = sinα·cosβ ± cosα·sinβ</span>
+          <span class="formula">cos(α±β) = cosα·cosβ ∓ sinα·sinβ</span>
+          <span class="formula">tg(α±β) = (tgα ± tgβ)/(1 ∓ tgα·tgβ)</span>
+        </div>
+        <div class="ex"><b>Мысал 3:</b> sin²60° + cos²60° = (√3/2)² + (1/2)² = 3/4 + 1/4 = 1</div>
+        <div class="ex"><b>Кесте:</b> <br> sin0°=0, 30°=0.5, 45°=0.71, 60°=0.87, 90°=1</div>
+      </div>
+      <div class="card board">
+        <div class="tools">
+          <div class="tool">Режим: <select id="mode"><option value="pen">Қалам</option><option value="eraser">Өшіргіш</option><option value="line">Сызғыш</option></select></div>
+          <div class="tool">Қалыңдығы <input id="size" type="range" min="2" max="15" value="4"></div>
+          <div class="tool">Түс <input id="color" type="color" value="#a21caf"></div>
+          <button id="undoBtn" class="tool">↶ Undo</button>
+          <button id="clearBtn" class="tool">🧽 Тазалау</button>
+        </div>
+        <canvas id="canvas"></canvas>
+      </div>
+      <div class="card calc">
+        <b>Онлайн калькулятор</b>
+        <span class="chip">sin, cos, tg (градуспен)</span><br>
+        f(x):
+        <select id="trFn"><option value="sin">sin</option><option value="cos">cos</option><option value="tan">tg</option></select>
+        (<input id="angle" type="number" value="45" style="width:55px">°)
+        <button id="trigCalcBtn">Есептеу</button>
+        <span id="tcOut" class="out"></span>
+        <div style="margin-top:5px;">
+          <b>Түбір:</b>
+          <input id="sqv" type="number" style="width:45px">
+          <button id="sqBtn">√</button>
+          <span id="sqOut" class="out"></span>
+        </div>
+      </div>
+    </section>
+    <section>
+      <div class="card">
+        <h2>Тест (10 сұрақ, 10 балл)</h2>
+        <div id="testArea"></div>
+        <div class="test-result" id="testResult"></div>
+        <h2 style="margin-top:15px;">Сәйкестендіру (5 жұп)</h2>
+        <div class="match-grid" id="matchArea"></div>
+        <div class="test-result" id="matchResult"></div>
+        <h2>Тексеру және нәтиже сақтау</h2>
+        <div class="save-box">
+          <span id="scoreSummary">Жалпы балл: әлі есептелген жоқ</span>
+          <button id="checkAllBtn" style="margin:3px 8px;">✅ Тексеру</button>
+          <label>Аты-жөні:<input id="studentName"/></label>
+          <button id="saveResultBtn">💾 Сақтау</button>
+        </div>
+        <div style="color:var(--muted);font-size:12px;margin:3px 0;" id="saveMessage"></div>
+        <table class="saved-table" id="resultsTable">
+          <thead><tr><th>№</th><th>Аты-жөні</th><th>Балл</th><th>Уақыты</th><th>Қалған уақ.</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <button id="clearResultsBtn" style="margin-top:6px;">🗑 Тазалау</button>
+      </div>
+    </section>
+  </main>
+  <footer>
+    Деректер браузерде сақталады. Басты бет — index.html арқылы өтесің.
+  </footer>
+</div>
+<script>
+  // --- 1. Таймер
+  const TIMER_SEC = 15 * 60; let remaining = TIMER_SEC, timerId = null;
+  const timerDisplay = document.getElementById('timerDisplay'),timerStatus=document.getElementById('timerStatus'),restartTimerBtn=document.getElementById('restartTimerBtn');
+  function ftime(sec){let m=Math.floor(sec/60),s=sec%60;return String(m).padStart(2,0)+':'+String(s).padStart(2,0);}
+  function updateTimerUI(){timerDisplay.textContent=ftime(remaining);
+    if(remaining<=0){timerStatus.textContent='Уақыт аяқталды.';clearInterval(timerId);timerId=null;}
+    else if(remaining<=180){timerStatus.textContent='Қалған уақыт аз! Жылдам!';}
+    else timerStatus.textContent='Орындау уақыты жүріп жатыр'; }
+  function startTimer(){if(timerId)clearInterval(timerId);remaining = TIMER_SEC;updateTimerUI();
+    timerId=setInterval(()=>{remaining--; updateTimerUI(); if(remaining<=0)clearInterval(timerId);},1000);}
+  restartTimerBtn.onclick=startTimer;startTimer();
+  // --- 2. Board
+  const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d'),modeEl=document.getElementById('mode'),sizeEl=document.getElementById('size'),colorEl=document.getElementById('color');
+  let drawing=false,lastX=0,lastY=0,lineStart=null,history=[];
+  function fitCanvas(){const r=canvas.getBoundingClientRect(),dpr=window.devicePixelRatio||1;canvas.width=Math.floor(r.width*dpr);canvas.height=Math.floor(r.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);if(history.length){const img=new Image();img.onload=()=>ctx.drawImage(img,0,0,r.width,r.height);img.src=history[history.length-1];}}
+  function snapshot(){history.push(canvas.toDataURL());if(history.length>12)history.shift();}
+  function getPos(e){const r=canvas.getBoundingClientRect(),x=(e.touches?e.touches[0].clientX:e.clientX)-r.left,y=(e.touches?e.touches[0].clientY:e.clientY)-r.top;return{x,y};}
+  function start(e){e.preventDefault();const{x,y}=getPos(e),mode=modeEl.value;if(mode==='line'){if(!lineStart){lineStart={x,y};}else{snapshot();ctx.save();ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=+sizeEl.value;ctx.strokeStyle=colorEl.value;ctx.beginPath();ctx.moveTo(lineStart.x,lineStart.y);ctx.lineTo(x,y);ctx.stroke();ctx.restore();lineStart=null;}return;}snapshot();drawing=true;lastX=x;lastY=y;}
+  function move(e){if(!drawing)return;e.preventDefault();const{x,y}=getPos(e),mode=modeEl.value;ctx.save();ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=+sizeEl.value;if(mode==='eraser'){ctx.globalCompositeOperation='destination-out';ctx.strokeStyle='rgba(0,0,0,1)';}else{ctx.globalCompositeOperation='source-over';ctx.strokeStyle=colorEl.value;}ctx.beginPath();ctx.moveTo(lastX,lastY);ctx.lineTo(x,y);ctx.stroke();ctx.restore();lastX=x;lastY=y;}
+  function end(){drawing=false;}
+  document.getElementById('clearBtn').onclick=()=>{snapshot();ctx.clearRect(0,0,canvas.width,canvas.height);lineStart=null;};
+  document.getElementById('undoBtn').onclick=()=>{if(history.length<2)return;history.pop();const img=new Image();img.onload=()=>{const r=canvas.getBoundingClientRect();ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,r.width,r.height);};img.src=history[history.length-1];lineStart=null;};
+  canvas.addEventListener('mousedown',start);canvas.addEventListener('mousemove',move);window.addEventListener('mouseup',end);
+  canvas.addEventListener('touchstart',start,{passive:false});canvas.addEventListener('touchmove',move,{passive:false});window.addEventListener('touchend',end);
+  window.addEventListener('resize',fitCanvas);fitCanvas();snapshot();
+  // --- 3. Trig калькулятор
+  trigCalcBtn.onclick=()=>{
+    let fn=trFn.value,ang=Number(angle.value),rad=ang*Math.PI/180;
+    let v=fn==='sin'?Math.sin(rad):fn==='cos'?Math.cos(rad):Math.tan(rad);
+    tcOut.textContent=fn+"("+ang+"°) = "+v;
+  };
+  sqBtn.onclick=()=>{let v=Number(sqv.value);sqOut.textContent='√'+v+' = '+Math.sqrt(v);};
+  // --- 4. Тест
+  const testQuestions = [
+    {q:"1) sin30° неге тең?",options:["0","0.5","0.866","1"],correct:1},
+    {q:"2) cos60° неге тең?",options:["0","0.5","1","0.866"],correct:1},
+    {q:"3) tg45° = ?",options:["0","1","0.5","√3"],correct:1},
+    {q:"4) sin90° = ?",options:["0.5","1","0.866","0"],correct:1},
+    {q:"5) cos0° = ?",options:["1","0.5","0","0.866"],correct:0},
+    {q:"6) sin²60° + cos²60° = ?",options:["1","0.75","0.5","0"],correct:0},
+    {q:"7) tg0° = ?",options:["0","1","Болмайды","0.5"],correct:0},
+    {q:"8) sin²A + cos²A = ?",options:["A","0","1","tgA"],correct:2},
+    {q:"9) cos90° = ?",options:["1","0","0.5","-1"],correct:1},
+    {q:"10) Тікбұрышты үшбұрыш: синус анықтамасы?", options:[
+      "Қарама-қарсы катет/гипотенуза","Іргелес катет/гипотенуза","Қарама-қарсы/іргелес","Гипотенуза/катет"], correct:0}
+  ];
+  const testArea=document.getElementById('testArea');
+  function renderTest(){
+    testArea.innerHTML = '';
+    testQuestions.forEach((q, idx) => {
+      const div = document.createElement('div');
+      div.className = 'question';
+      div.dataset.index = idx;
+      const title = document.createElement('div');
+      title.className = 'question-title';
+      title.textContent = q.q;
+      div.appendChild(title);
+      q.options.forEach((opt, i) => {
+        const id = `q${idx}_opt${i}`;
+        const label = document.createElement('label');
+        label.className = 'option';
+        label.htmlFor = id;
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = `q${idx}`;
+        radio.id = id;
+        radio.value = i;
+        label.appendChild(radio);
+        label.appendChild(document.createTextNode(' '+opt));
+        div.appendChild(label);
+      });
+      const fb = document.createElement('div');
+      fb.className = 'small-feedback'; fb.id = `fb${idx}`; div.appendChild(fb);
+      testArea.appendChild(div);
+    });
+  }
+  renderTest();
+  function checkTest(){
+    let score=0, details=[];
+    testQuestions.forEach((q, idx)=>{
+      const sel=document.querySelector(`input[name="q${idx}"]:checked`);
+      const fb=document.getElementById(`fb${idx}`);
+      if(!sel){ fb.textContent="Жауап таңдалмаған."; fb.className='small-feedback wrong'; details.push(`С${idx+1}: жауап жоқ.`); return;}
+      if(Number(sel.value)===q.correct){score++;fb.textContent="Дұрыс!";fb.className='small-feedback correct';}
+      else{fb.textContent="Қате.";fb.className='small-feedback wrong';details.push(`С${idx+1}: қате.`);}
+    });
+    return {score,details};
+  }
+  // --- 5. Сәйкестендіру
+  const matchPairs = [
+    {formula:"sin²α + cos²α = 1",letter:"a",desc:"Негізгі триг. тождество"},
+    {formula:"sin(α±β) = sinα·cosβ ± cosα·sinβ",letter:"b",desc:"Қосу/Айыру формуласы (sin)"},
+    {formula:"cos(α±β) = cosα·cosβ ∓ sinα·sinβ",letter:"c",desc:"Қосу/айыру (cos)"},
+    {formula:"tg α = sinα / cosα",letter:"d",desc:"Тангенс анықтамасы"},
+    {formula:"sin α = қарсы / гипотенуза",letter:"e",desc:"Синус   анықтамасы"}
+  ];
+  const matchArea=document.getElementById('matchArea');
+  function renderMatch(){
+    const leftCol=document.createElement('div'),rightCol=document.createElement('div');
+    matchPairs.forEach((item,idx)=>{
+      const d=document.createElement('div');
+      d.className='match-item';
+      d.innerHTML=`<strong>${idx+1}) ${item.formula}</strong><br>Жауабы: <input maxlength="1" data-index="${idx}" />`;
+      leftCol.appendChild(d);
+    });
+    const shuffled=[...matchPairs].sort(()=>Math.random()-.5);
+    shuffled.forEach(item=>{
+      const d=document.createElement('div');
+      d.className='match-item';
+      d.innerHTML=`<strong>${item.letter})</strong> ${item.desc}`;
+      rightCol.appendChild(d);
+    });
+    matchArea.innerHTML='';matchArea.appendChild(leftCol);matchArea.appendChild(rightCol);
+  }
+  renderMatch();
+  function checkMatch(){
+    const inputs=matchArea.querySelectorAll('input[data-index]');
+    let correct=0,total=matchPairs.length;
+    inputs.forEach(inp=>{
+      const idx=Number(inp.dataset.index);
+      const val=(inp.value||'').trim().toLowerCase();
+      if(val===matchPairs[idx].letter){correct++;inp.style.borderColor='var(--good)';}
+      else inp.style.borderColor='var(--danger)';
+    });
+    return {correct,total};
+  }
+  // --- 6. Тексеру/Сақтау
+  const checkAllBtn=document.getElementById('checkAllBtn'),scoreSummaryEl=document.getElementById('scoreSummary');
+  let lastScore=null;
+  checkAllBtn.onclick=()=>{
+    const testRes=checkTest(),matchRes=checkMatch();
+    const mainScore=testRes.score,bonus=matchRes.correct*0.2,totalScore=Math.min(10,+(mainScore+bonus).toFixed(1));
+    lastScore=totalScore;
+    scoreSummaryEl.textContent="Жалпы балл: "+totalScore+" / 10.";
+    testResult.style.display='block'; testResult.textContent=`Тест: ${testRes.score}/10.`;
+    matchResult.style.display='block'; matchResult.textContent=`Сәйкестендіру: ${matchRes.correct}/${matchRes.total}.`;
+  };
+  // --- 7. Нәтиже сақтау/localStorage
+  const saveResultBtn=document.getElementById('saveResultBtn'),studentNameEl=document.getElementById('studentName'),saveMessageEl=document.getElementById('saveMessage'),resultsTableBody=document.querySelector('#resultsTable tbody'),clearResultsBtn=document.getElementById('clearResultsBtn');
+  const STORAGE_KEY='mathBoard_trig_results';
+  function loadResults(){const raw=localStorage.getItem(STORAGE_KEY);if(!raw)return[];try{const arr=JSON.parse(raw);return Array.isArray(arr)?arr:[];}catch(e){return[];}}
+  function saveResults(arr){localStorage.setItem(STORAGE_KEY,JSON.stringify(arr));}
+  function renderResultsTable(){const arr=loadResults();resultsTableBody.innerHTML='';arr.forEach((row,idx)=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${idx+1}</td><td>${row.name}</td><td>${row.score}</td><td>${row.time}</td><td>${row.remaining}</td>`;resultsTableBody.appendChild(tr);});}
+  renderResultsTable();
+  saveResultBtn.onclick=()=>{
+    if(lastScore==null){saveMessageEl.textContent="Алдымен “Тексеру” батырмасын басыңыз.";saveMessageEl.style.color='var(--danger)';return;}
+    const name=studentNameEl.value.trim();if(!name){saveMessageEl.textContent="Аты-жөніңізді жазыңыз.";saveMessageEl.style.color='var(--danger)';return;}
+    const now=new Date(),timeStr=now.toLocaleString('kk-KZ',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+    const result={name,score:lastScore,time:timeStr,remaining:ftime(remaining)};
+    const arr=loadResults();arr.push(result);saveResults(arr);renderResultsTable();
+    saveMessageEl.textContent="Нәтиже сақталды.";saveMessageEl.style.color='var(--good)';
+  };
+  clearResultsBtn.onclick=()=>{if(confirm('Барлық нәтижелерді өшіруді қалайсыз ба?')){saveResults([]);renderResultsTable();saveMessageEl.textContent='Барлық нәтижелер өшірілді.';saveMessageEl.style.color='var(--muted)';}};
+</script>
+</body>
+</html>
