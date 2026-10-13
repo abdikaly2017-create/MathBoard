@@ -198,6 +198,8 @@
     {q:"10) Тікбұрышты үшбұрыш: синус анықтамасы?", options:[
       "Қарама-қарсы катет/гипотенуза","Іргелес катет/гипотенуза","Қарама-қарсы/іргелес","Гипотенуза/катет"], correct:0}
   ];
+  const trigExplanations = ["sin 30° = 1/2 = 0.5 — бұл арнайы бұрыштың мәні.","cos 60° = 1/2 = 0.5.","tg 45° = sin 45° / cos 45° = 1.","sin 90° = 1, өйткені бірлік шеңберде y-координатасы 1.","cos 0° = 1, өйткені бірлік шеңбердің бастапқы нүктесінің x-координатасы 1.","sin²α + cos²α = 1 негізгі тригонометриялық тепе-теңдігі бойынша қосынды 1.","tg 0° = sin 0° / cos 0° = 0/1 = 0.","sin²A + cos²A = 1 — негізгі тригонометриялық тепе-теңдік.","cos 90° = 0, өйткені бірлік шеңбердегі x-координата 0.","sin α = қарсы жатқан катет / гипотенуза."];
+  testQuestions.forEach((q,i)=>{ q.explain = trigExplanations[i]; });
   const testArea=document.getElementById('testArea');
   function renderTest(){
     testArea.innerHTML = '';
@@ -235,8 +237,8 @@
       const sel=document.querySelector(`input[name="q${idx}"]:checked`);
       const fb=document.getElementById(`fb${idx}`);
       if(!sel){ fb.textContent="Жауап таңдалмаған."; fb.className='small-feedback wrong'; details.push(`С${idx+1}: жауап жоқ.`); return;}
-      if(Number(sel.value)===q.correct){score++;fb.textContent="Дұрыс!";fb.className='small-feedback correct';}
-      else{fb.textContent="Қате.";fb.className='small-feedback wrong';details.push(`С${idx+1}: қате.`);}
+      if(Number(sel.value)===q.correct){score++;fb.textContent="Дұрыс! "+q.explain;fb.className='small-feedback correct';}
+      else{fb.textContent="Қате. Дұрыс жауап: "+q.options[q.correct]+". "+q.explain;fb.className='small-feedback wrong';details.push(`С${idx+1}: қате.`);}
     });
     return {score,details};
   }
