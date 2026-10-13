@@ -4,3 +4,19 @@
 /* Shared small navigation and local-progress utility for existing lessons */
 .mb-back-home{position:fixed;z-index:9999;right:16px;bottom:16px;display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid #55e4f355;border-radius:999px;background:#0d1729ed;color:#eaf2ff;text-decoration:none;font:700 13px/1.2 system-ui;box-shadow:0 8px 30px #0005;backdrop-filter:blur(12px)}
 .mb-back-home:hover{border-color:#55e4f3;background:#142642}
+
+/* Unified dark-tech theme for existing lesson pages; keep each lesson's tools and markup intact */
+body:not(.mb-home){min-height:100vh!important;background:radial-gradient(900px 500px at 8% 0%,rgba(34,211,238,.10),transparent 60%),radial-gradient(800px 520px at 95% 10%,rgba(124,58,237,.12),transparent 55%),#070b16!important;color:#edf3ff!important}
+body:not(.mb-home) header,body:not(.mb-home) .container>header,body:not(.mb-home) .wrap,body:not(.mb-home) .main{color:#edf3ff}
+body:not(.mb-home) header{background:rgba(16,24,43,.92)!important;border:1px solid rgba(160,184,255,.16)!important;box-shadow:0 18px 50px rgba(0,0,0,.25)!important}
+body:not(.mb-home) .container,body:not(.mb-home) .wrap{background:transparent}
+body:not(.mb-home) .q,body:not(.mb-home) .question,body:not(.mb-home) .card,body:not(.mb-home) .panel,body:not(.mb-home) .box,body:not(.mb-home) .task,body:not(.mb-home) .result-box,body:not(.mb-home) .main{background:rgba(16,24,43,.92)!important;color:#edf3ff!important;border-color:rgba(160,184,255,.16)!important;box-shadow:0 12px 35px rgba(0,0,0,.18)}
+body:not(.mb-home) input:not([type=checkbox]):not([type=radio]),body:not(.mb-home) textarea,body:not(.mb-home) select{background:#0b1324!important;color:#edf3ff!important;border:1px solid rgba(160,184,255,.24)!important;border-radius:10px}
+body:not(.mb-home) button,body:not(.mb-home) .btn,body:not(.mb-home) .a-btn{border-radius:10px;transition:filter .15s,transform .15s}
+body:not(.mb-home) button:hover,body:not(.mb-home) .btn:hover,body:not(.mb-home) .a-btn:hover{filter:brightness(1.12);transform:translateY(-1px)}
+body:not(.mb-home) table{color:#edf3ff;border-color:rgba(160,184,255,.2)}
+body:not(.mb-home) th{background:#172541!important;color:#edf3ff!important}
+body:not(.mb-home) td{border-color:rgba(160,184,255,.16)!important}
+body:not(.mb-home) a{color:#7ce8f4}
+body:not(.mb-home) .back,body:not(.mb-home) a.back{color:#edf3ff!important;border-color:rgba(160,184,255,.22)!important}
+@media(max-width:600px){body:not(.mb-home) .container,body:not(.mb-home) .wrap{padding-left:12px;padding-right:12px}}
