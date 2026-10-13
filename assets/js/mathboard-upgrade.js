@@ -15,7 +15,7 @@ function initMathBoardExtras(){
     resize();window.addEventListener('resize',resize,{passive:true});if(!matchMedia('(prefers-reduced-motion: reduce)').matches)requestAnimationFrame(draw);
   }
   if(!document.getElementById('mb-notify-button')){
-    const b=document.createElement('button');b.id='mb-notify-button';b.className='mb-notify-button';b.type='button';b.setAttribute('aria-label','Хабарландырулар');b.setAttribute('aria-expanded','false');b.innerHTML='♧<span class="mb-notify-dot" aria-hidden="true"></span>';
+    const b=document.createElement('button');b.id='mb-notify-button';b.className='mb-notify-button';b.type='button';b.setAttribute('aria-label','Хабарландырулар');b.setAttribute('aria-expanded','false');b.innerHTML='🔔<span class="mb-notify-dot" aria-hidden="true"></span>';
     const p=document.createElement('aside');p.id='mb-notify-panel';p.className='mb-notify-panel';p.hidden=true;p.setAttribute('aria-label','Хабарландырулар тізімі');
     p.innerHTML='<div class="mb-notify-top"><h3>🔔 Хабарландырулар</h3><button type="button" class="mb-notify-close" id="mb-notify-close">Жабу</button></div><div class="mb-notice"><strong>✨ MathBoard жаңарды</strong><p>Жаңа оқу орталығы мен күнделікті шағын есеп қосылды.</p><time>Жаңа</time></div><div class="mb-notice"><strong>📘 Прогрессиялар зертханасы</strong><p>Арифметикалық және геометриялық прогрессияны мысалдармен қайтала.</p><time>Оқу бөлімі</time></div><div class="mb-notice"><strong>🎯 Бүгінгі мақсат</strong><p>Бір тақырыпты таңдап, кемінде үш есепті түсініп шығар.</p><time>Ұсыныс</time></div>';
     document.body.append(b,p);
