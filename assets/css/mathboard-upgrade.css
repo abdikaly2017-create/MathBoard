@@ -130,4 +130,8 @@ html.mb-dark .mb-section-heading h2,html.mb-dark .mb-learning-card h3,html.mb-da
 html.mb-dark .mb-learning-card p,html.mb-dark .mb-section-heading p{color:#b8bfd9}
 html.mb-dark .mb-notify-panel{background:#171d35;color:#f3f4ff;border-color:#41496a}
 html.mb-dark .mb-notice{border-color:#353d5e}
-@media(prefers-reduced-motion:reduce){#mb-math-canvas{display:none}}
+
+/* Hotfix: ensure the animated canvas is visible above page background. */
+#mb-math-canvas{display:block!important;position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;z-index:1!important;pointer-events:none!important;opacity:.72!important}
+body>.container,body>header,body>main,body>section,body>.bg-decor{position:relative;z-index:2}
+.mb-notify-button{display:grid!important;place-items:center!important}
