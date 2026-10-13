@@ -1,70 +1,22 @@
-<!DOCTYPE html>
-<html lang="kk">
-<head>
-  <meta charset="UTF-8">
-  <title>AP/GP Quest — есеп, ойын</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <style>
-    body{margin:0;font-family:sans-serif;background:#fff0;}
-    .main{max-width:670px;margin:24px auto;padding:26px 11px 30px 11px;background:#f9fafb;border-radius:20px;box-shadow:0 8px 36px #81e6d918;}
-    h1{margin:0 0 10px 0;color:#0ea5e9;}
-    .chip{background:#bae6fd;font-weight:700;border-radius:999px;padding:4px 9px;margin-right:12px;}
-    .questblock{background:#fff;padding:16px 18px 17px 18px;border-radius:13px;}
-    .q{font-size:18px;margin:18px 0 9px 0;font-weight:700;}
-    .input{padding:7px 11px;border-radius:7px;width:90px;}
-    .btn{padding:8px 17px;font-size:14px;border-radius:10px;background:#bae6fd;border:0;font-weight:700;}
-    .status{font-size:14px;margin:10px 0;}
-    .endblock{background:#bae6fd;padding:13px 13px;border-radius:13px;}
-    .main a{font-size:13px;}
-  </style>
-  <link rel="stylesheet" href="./modern.css">
-</head>
-<body>
-<div class="main">
-  <h1>AP/GP Quest <span class="chip">Ойындағы есептер</span></h1>
-  <div class="questblock" id="game"></div>
-  <div class="status" id="status"></div>
-  <div id="endblock" style="display:none;"></div>
-  <p><a href="index.html">← Басты бет</a></p>
-</div>
+<!doctype html><html lang="kk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sequence Quest | MathBoard</title><link rel="stylesheet" href="./modern.css"><style>
+body{margin:0;background:#070b16;color:#edf3ff;font:15px/1.5 system-ui,sans-serif}.wrap{max-width:900px;margin:28px auto;padding:16px}.btn{display:inline-block;border:1px solid #34415f;background:#141f37;color:#edf3ff;border-radius:12px;padding:10px 15px;text-decoration:none;font-weight:750;cursor:pointer}.primary{background:linear-gradient(110deg,#55e4f3,#6ee7b7);color:#07111f;border:0}.box{border:1px solid #293550;background:linear-gradient(145deg,#121c31,#0d1425);border-radius:22px;padding:23px;margin-top:16px}.title{font-size:clamp(29px,5vw,42px)}.muted{color:#a7b5d2}.map{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:18px 0}.node{border:1px solid #34415f;background:#ffffff06;color:#a7b5d2;border-radius:13px;padding:12px 4px;font-weight:850;cursor:pointer}.node.active{border-color:#55e4f3;color:#55e4f3;background:#55e4f31b}.node.done{border-color:#6ee7b7;color:#6ee7b7;background:#6ee7b714}.q{font-size:clamp(23px,4vw,33px);font-weight:850;margin:20px 0}.input{width:min(230px,65%);background:#070b16;border:1px solid #445576;color:#fff;padding:13px;border-radius:12px;font:inherit}.row{display:flex;gap:9px;flex-wrap:wrap}.pill{border:1px solid #ffffff18;border-radius:99px;padding:7px 12px}.note{min-height:26px;margin:14px 0}.track{height:8px;background:#ffffff12;border-radius:20px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#55e4f3,#6ee7b7);width:0;transition:width .3s}@media(max-width:600px){.wrap{padding:12px}.box{padding:16px}.map{gap:5px}.node{font-size:12px;padding:10px 2px}}
+</style></head><body><main class="wrap"><a class="btn" href="index.html">← MathBoard</a><section class="box"><small style="color:#6ee7b7;font-weight:900;letter-spacing:1px">MISSION MODE / 03</small><h1 class="title">Sequence <span style="color:#6ee7b7">Quest</span></h1><p class="muted">Прогрессиялар әлеміндегі 10 миссияны орында. Әр дұрыс жауап сені финалдық миссияға жақындатады.</p><div class="row"><span class="pill">⭐ Ұпай: <b id="score">0</b></span><span class="pill">🗺 Миссия: <b id="progress">0/10</b></span><span class="pill">🔥 Серия: <b id="streak">0</b></span></div><div class="track" style="margin-top:15px"><div class="fill" id="fill"></div></div><div class="map" id="map"></div></section><section class="box"><small id="kind" style="color:#6ee7b7;font-weight:900">MISSION 01</small><div class="q" id="question"></div><p class="muted" id="hint">Жауабыңды енгіз.</p><div class="row"><input class="input" id="answer" inputmode="decimal" placeholder="Жауабыңды жаз…"><button class="btn primary" id="check">Тексеру →</button></div><div class="note" id="note" aria-live="polite"></div><div class="row"><button class="btn" id="help">Көмек 💡</button><button class="btn" id="skip">Өткізу ↷</button><button class="btn" id="restart">Қайта бастау ↻</button></div></section></main>
 <script>
-const tasks=[
-  {type:"ap",q:"AP: a₁=3, d=5, n=7. a₇=?",a:33},
-  {type:"ap",q:"AP: a₁=2, d=7, n=8. a₈=?",a:51},
-  {type:"ap",q:"AP: a₁=4, d=−3, n=6. a₆=?",a:-11},
-  {type:"ap",q:"AP: a₁=12, d=−4, n=4. S₄=?",a:24},
-  {type:"gp",q:"GP: b₁=3, q=2, n=5. b₅=?",a:48},
-  {type:"gp",q:"GP: b₁=2, q=−3, n=4. S₄=?",a:2},
-  {type:"gp",q:"GP: b₁=5, q=8, n=3. b₃=?",a:320},
-  {type:"gp",q:"GP: b₁=1, q=0,5, n=5. S₅=?",a:1.9375}
-];
-let score=0, idx=0, order=[...Array(tasks.length).keys()].sort(()=>Math.random()-.5);
-function showQ(){
-  let i=order[idx],t=tasks[i];
-  game.innerHTML=`<div class=q>${t.q}</div>
-  <label>Жауап: <input class=input id=guess></label>
-  <button class=btn onclick='submit()'>Тексеру</button>`;
-  status.textContent=`Есеп ${idx+1}/${tasks.length}`;
-}
-function submit(){
-  let t=tasks[order[idx]], u=guess.value.replace(",","."),v=Number(u);
-  let correct=(Math.abs(v-t.a)<0.01);
-  if(correct) score++;
-  idx++;
-  if(idx<tasks.length) showQ();
-  else endquiz();
-}
-function endquiz(){
-  game.innerHTML="";
-  endblock.style.display="block";
-  endblock.innerHTML=
-    `<div class='endblock'><b>Дұрыс жауап: ${score}/${tasks.length}</b><br>
-    <button class=btn onclick='reset()'>Қайталау</button></div>`;
-  status.textContent = "Бітті!";
-}
-function reset(){score=0;idx=0;order=[...Array(tasks.length).keys()].sort(()=>Math.random()-.5);endblock.style.display="none";showQ();}
-reset();
-</script>
-  <script src="./modern.js"></script>
-</body>
-</html>
+var $=function(x){return document.getElementById(x)},missions=[
+{t:'AP',q:'a₁=4, d=3. a₆ = ?',a:19,h:'aₙ = a₁ + (n−1)d'},
+{t:'AP',q:'a₁=7, d=−2. a₅ = ?',a:-1,h:'aₙ = a₁ + (n−1)d'},
+{t:'AP',q:'a₁=2, d=4. S₅ = ?',a:50,h:'Sₙ = n(a₁+aₙ)/2'},
+{t:'AP',q:'5, 9, 13, 17, … келесі сан?',a:21,h:'Айырымы тұрақты.'},
+{t:'GP',q:'b₁=3, q=2. b₅ = ?',a:48,h:'bₙ = b₁ · qⁿ⁻¹'},
+{t:'GP',q:'2, 6, 18, 54, … келесі сан?',a:162,h:'Әр жолы бірдей санға көбейеді.'},
+{t:'GP',q:'b₁=5, q=3. b₃ = ?',a:45,h:'b₃ = b₁ · q²'},
+{t:'AP',q:'a₁=12, d=−3. a₄ = ?',a:3,h:'12-ден үш рет 3-ті азайт.'},
+{t:'GP',q:'b₁=1, q=2. S₄ = ?',a:15,h:'1 + 2 + 4 + 8'},
+{t:'BOSS',q:'AP: a₃=11, a₇=27. Айырымы d = ?',a:4,h:'a₇ − a₃ = 4d'}
+],idx=0,score=0,streak=0,done={},locked=false;
+function map(){ $('map').innerHTML=missions.map(function(m,i){return '<button class="node '+(done[i]?'done ':'')+(i===idx?'active':'')+'" onclick="jump('+i+')">'+(done[i]?'✓':i===9?'👑':i+1)+'</button>'}).join('')}
+function show(){$('kind').textContent='MISSION '+String(idx+1).padStart(2,'0')+' · '+missions[idx].t;$('question').textContent=missions[idx].q;$('hint').textContent='Жауабыңды енгізіп, тексер.';$('answer').value='';$('answer').disabled=false;$('check').disabled=false;$('note').textContent='';$('progress').textContent=Object.keys(done).length+'/10';$('score').textContent=score;$('streak').textContent=streak;$('fill').style.width=Object.keys(done).length*10+'%';map();locked=false}
+function check(){if(locked||done[idx])return;var raw=$('answer').value.trim().replace(',','.');if(raw===''){$('note').textContent='Алдымен жауабыңды енгіз.';return}if(Math.abs(Number(raw)-missions[idx].a)<.001){locked=true;done[idx]=true;streak++;var pts=10+Math.min(streak-1,4)*2;score+=pts;$('note').textContent='Дұрыс! +'+pts+' ұпай ✨';$('note').style.color='#6ee7b7';$('answer').disabled=true;$('check').disabled=true;$('progress').textContent=Object.keys(done).length+'/10';$('score').textContent=score;$('streak').textContent=streak;$('fill').style.width=Object.keys(done).length*10+'%';map();if(Object.keys(done).length===10){$('kind').textContent='QUEST COMPLETE';$('question').textContent='🏆 Миссия орындалды!';$('hint').textContent='10 тапсырманың бәрі аяқталды. Ұпай: '+score;localStorage.setItem('mb_quest_best',Math.max(score,Number(localStorage.getItem('mb_quest_best')||0)))}else setTimeout(function(){idx=(idx+1)%10;while(done[idx]&&Object.keys(done).length<10)idx=(idx+1)%10;show()},700)}else{streak=0;$('streak').textContent='0';$('note').textContent='Әлі дәл емес. Формуланы қолданып қайта есепте!';$('note').style.color='#fb7185'}}
+function jump(i){if(done[i])return;idx=i;show()}
+$('check').onclick=check;$('answer').addEventListener('keydown',function(e){if(e.key==='Enter')check()});$('help').onclick=function(){$('hint').textContent='💡 '+missions[idx].h};$('skip').onclick=function(){idx=(idx+1)%10;while(done[idx]&&Object.keys(done).length<10)idx=(idx+1)%10;show()};$('restart').onclick=function(){idx=score=streak=0;done={};show()};show();
+</script><script src="./modern.js"></script></body></html>
