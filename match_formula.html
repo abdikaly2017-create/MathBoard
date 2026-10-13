@@ -1,68 +1,20 @@
-<!DOCTYPE html>
-<html lang="kk">
-<head>
-  <meta charset="UTF-8">
-  <title>Match: Формула ↔ Атауы — сәйкестендіру</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <style>
-    body{margin:0;font-family:sans-serif;background:#f8fafc;}
-    .main{max-width:650px;margin:24px auto;padding:24px 10px;background:#fff;border-radius:18px;box-shadow:0 12px 32px #818cf811;}
-    h1{margin:0 0 10px;color:#6366f1;}
-    .chip{background:#e0e7ff;font-weight:700;border-radius:999px;padding:4px 9px;margin-right:12px;}
-    .matchblock{background:#e0e7ff;padding:13px 10px 20px 10px;border-radius:13px;}
-    .cell{margin:8px 0;}
-    .input{width:30px;border-radius:6px;padding:6px 8px;}
-    .btn{padding:7px 16px;font-size:14px;border-radius:9px;background:#e0e7ff;border:0;font-weight:700;margin-right:9px;margin-top:8px;}
-    .res{margin-top:8px;}
-    .pairlist{font-size:15px;}
-    .main a{font-size:13px;}
-  </style>
-  <link rel="stylesheet" href="./modern.css">
-</head>
-<body>
-<div class="main">
-  <h1>Match: <span class="chip">Формула ↔ Атауы</span></h1>
-  <div class="matchblock">
-    <div class="pairlist" id="leftcol"></div>
-    <div class="pairlist" id="rightcol"></div>
-    <button class=btn onclick="check()">Тексеру</button>
-    <button class=btn onclick="reset()">Қайталау</button>
-    <div class=res id="res"></div>
-  </div>
-  <p><a href="index.html">← Басты бет</a></p>
-</div>
+<!doctype html><html lang="kk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Formula Link | MathBoard</title><link rel="stylesheet" href="./modern.css"><style>
+body{margin:0;background:#070b16;color:#edf3ff;font:15px/1.5 system-ui,sans-serif}.wrap{max-width:1000px;margin:28px auto;padding:16px}.btn{border:1px solid #34415f;background:#141f37;color:#edf3ff;border-radius:12px;padding:10px 15px;text-decoration:none;font-weight:750;cursor:pointer}.box{border:1px solid #293550;background:linear-gradient(145deg,#121c31,#0d1425);border-radius:22px;padding:22px;margin-top:16px}.title{font-size:clamp(29px,5vw,42px)}.muted{color:#a7b5d2}.columns{display:grid;grid-template-columns:1fr 1fr;gap:14px}.item{display:block;width:100%;text-align:left;border:1px solid #33415e;background:#ffffff06;color:#edf3ff;border-radius:14px;padding:15px;margin:8px 0;font:inherit;cursor:pointer;min-height:62px}.item.selected{border-color:#55e4f3;background:#55e4f31a}.item.matched{border-color:#6ee7b7;background:#145c4b66;color:#c9ffe7}.item.wrong{border-color:#fb7185}.row{display:flex;gap:10px;flex-wrap:wrap}.pill{border:1px solid #ffffff18;border-radius:99px;padding:7px 12px}.fill{height:8px;background:linear-gradient(90deg,#a78bfa,#55e4f3);width:0;transition:width .2s}.track{height:8px;background:#ffffff12;border-radius:99px;overflow:hidden;margin:15px 0}.note{min-height:25px;margin:12px 0;color:#55e4f3}@media(max-width:650px){.columns{grid-template-columns:1fr}.box{padding:16px}}
+</style></head><body><main class="wrap"><a class="btn" href="index.html">← MathBoard</a><section class="box"><small style="color:#a78bfa;font-weight:900;letter-spacing:1px">BRAIN GAME / 02</small><h1 class="title">Formula <span style="color:#a78bfa">Link</span></h1><p class="muted">Формуланы оның мағынасымен жұптастыр. Аз қадаммен барлық сәйкестікті тап!</p><div class="row"><span class="pill">🧩 Жұптар: <b id="count">0/6</b></span><span class="pill">👆 Қадам: <b id="moves">0</b></span><span class="pill">⏱ <b id="time">00:00</b></span></div></section><section class="box"><div class="track"><div class="fill" id="fill"></div></div><div class="columns"><div><p class="muted">A · ФОРМУЛАЛАР</p><div id="left"></div></div><div><p class="muted">B · ТҮСІНДІРМЕЛЕР</p><div id="right"></div></div></div><div id="note" class="note" aria-live="polite">Сол жақтан бір формуланы таңда.</div><div class="row"><button class="btn" id="hint">Көмек 💡</button><button class="btn" id="reset">Жаңа раунд ↻</button></div></section></main>
 <script>
-const pairs=[
- {f:"aₙ = a₁ + (n−1)d",m:"a","desc":"Арифм. прогрессия мүшесі"},
- {f:"Sₙ = (n/2)(2a₁+(n-1)d)",m:"b","desc":"Арифм. прогрессия қосынды"},
- {f:"bₙ = b₁·qⁿ⁻¹",m:"c","desc":"Геометриял. прогрессия мүшесі"},
- {f:"sin² α + cos² α = 1",m:"d","desc":"Тригонометрия фундамент. формула"},
- {f:"S_{үшб} = ½ a·h",m:"e","desc":"Үшбұрыш ауданы"},
- {f:"S_{шең} = πr²",m:"f","desc":"Шеңбер ауданы"}
-];
-let order=[...pairs.keys()].sort(()=>Math.random()-.5);
-function draw(){
-  leftcol.innerHTML=""; rightcol.innerHTML="";
-  order.forEach((i,idx)=>{
-    leftcol.innerHTML+=`<div class='cell'><b>${idx+1})</b>  ${pairs[i].f} — <input class=input maxlength=1 style='text-transform:lowercase' id='ans${i}'></div>`;
-  });
-  let right=[...pairs].sort(()=>Math.random()-.5);
-  right.forEach((p,idx)=>{
-    rightcol.innerHTML+=`<div class='cell'><b>${p.m})</b> ${p.desc}</div>`;
-  });
-  res.textContent="";
-}
-function check(){
-  let correct=0;
-  order.forEach((i,idx)=>{
-    let input=document.getElementById('ans'+i).value.trim().toLowerCase();
-    if(input===pairs[i].m)correct++;
-  });
-  res.innerHTML="<b>Дұрыс:"+correct+"/"+pairs.length+"</b>"+(correct===pairs.length?" — Өте жақсы!":"");
-}
-function reset(){draw();}
-reset();
-</script>
-  <script src="./modern.js"></script>
-</body>
-</html>
+var $=function(x){return document.getElementById(x)},data=[
+{f:'aₙ = a₁ + (n−1)d',d:'Арифметикалық прогрессияның n-мүшесі'},
+{f:'Sₙ = n(a₁+aₙ)/2',d:'Арифметикалық прогрессияның қосындысы'},
+{f:'bₙ = b₁ · qⁿ⁻¹',d:'Геометриялық прогрессияның n-мүшесі'},
+{f:'sin² α + cos² α = 1',d:'Негізгі тригонометриялық тепе-теңдік'},
+{f:'S = ah/2',d:'Үшбұрыштың ауданы'},
+{f:'D = b² − 4ac',d:'Квадрат теңдеудің дискриминанты'},
+{f:'S = πr²',d:'Дөңгелектің ауданы'},
+{f:'y = kx + b',d:'Сызықтық функция'}
+],round=[],chosen=null,matched={},moves=0,started=0,timer=null;
+function shuffle(a){return a.sort(function(){return Math.random()-.5})}function fmt(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+function init(){clearInterval(timer);round=shuffle(data.slice()).slice(0,6);matched={};chosen=null;moves=0;started=Date.now();$('moves').textContent='0';$('count').textContent='0/6';$('note').textContent='Сол жақтан бір формуланы таңда.';$('fill').style.width='0';$('time').textContent='00:00';draw();timer=setInterval(function(){$('time').textContent=fmt(Math.floor((Date.now()-started)/1000))},500)}
+function draw(){var l=shuffle(round.map(function(x,i){return {x:x,i:i}})),r=shuffle(round.map(function(x,i){return {x:x,i:i}}));$('left').innerHTML=l.map(function(v){return '<button class="item '+(matched[v.i]?'matched':'')+'" data-side="l" data-id="'+v.i+'" '+(matched[v.i]?'disabled':'')+'>'+v.x.f+'</button>'}).join('');$('right').innerHTML=r.map(function(v){return '<button class="item '+(matched[v.i]?'matched':'')+'" data-side="r" data-id="'+v.i+'" '+(matched[v.i]?'disabled':'')+'>'+v.x.d+'</button>'}).join('');document.querySelectorAll('.item:not(:disabled)').forEach(function(b){b.onclick=function(){pick(b)}})}
+function pick(b){var id=Number(b.dataset.id),side=b.dataset.side;if(chosen&&chosen.side===side){chosen.el.classList.remove('selected');chosen=null}if(!chosen){chosen={id:id,side:side,el:b};b.classList.add('selected');return}moves++;$('moves').textContent=moves;if(chosen.id===id){matched[id]=true;chosen=null;var n=Object.keys(matched).length;$('count').textContent=n+'/'+round.length;$('fill').style.width=n/round.length*100+'%';$('note').textContent='Дәл таптың! +1 жұп ✨';$('note').style.color='#6ee7b7';draw();if(n===round.length){clearInterval(timer);$('note').textContent='🏆 Барлық жұп табылды! Қадам саны: '+moves+'. Рекорд: '+Math.min(moves,Number(localStorage.getItem('mb_link_best')||999));if(moves<Number(localStorage.getItem('mb_link_best')||999))localStorage.setItem('mb_link_best',moves)}}else{chosen.el.classList.remove('selected');chosen.el.classList.add('wrong');b.classList.add('wrong');$('note').textContent='Сәйкес емес — тағы байқап көр!';$('note').style.color='#fb7185';var old=chosen.el;chosen=null;setTimeout(function(){old.classList.remove('wrong');b.classList.remove('wrong')},450)}}
+$('reset').onclick=init;$('hint').onclick=function(){var i=round.findIndex(function(x,j){return !matched[j]});if(i<0)return;$('note').textContent='Көмек: «'+round[i].f+'» формуласын ізде.';$('note').style.color='#55e4f3'};init();
+</script><script src="./modern.js"></script></body></html>
