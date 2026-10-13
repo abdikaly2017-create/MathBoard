@@ -51,6 +51,7 @@
     .chip{padding:5px 8px;border-radius:99px;background:#f3e8ff;font-size:12px;}
     footer{margin-top:16px;}
   </style>
+  <link rel="stylesheet" href="./modern.css">
 </head>
 <body>
 <div class="container">
@@ -305,5 +306,6 @@
   };
   clearResultsBtn.onclick=()=>{if(confirm('Барлық нәтижелерді өшіруді қалайсыз ба?')){saveResults([]);renderResultsTable();saveMessageEl.textContent='Барлық нәтижелер өшірілді.';saveMessageEl.style.color='var(--muted)';}};
 </script>
+  <script src="./modern.js"></script>
 </body>
 </html>

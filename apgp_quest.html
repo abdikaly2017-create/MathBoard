@@ -17,6 +17,7 @@
     .endblock{background:#bae6fd;padding:13px 13px;border-radius:13px;}
     .main a{font-size:13px;}
   </style>
+  <link rel="stylesheet" href="./modern.css">
 </head>
 <body>
 <div class="main">
@@ -64,5 +65,6 @@ function endquiz(){
 function reset(){score=0;idx=0;order=[...Array(tasks.length).keys()].sort(()=>Math.random()-.5);endblock.style.display="none";showQ();}
 reset();
 </script>
+  <script src="./modern.js"></script>
 </body>
 </html>
