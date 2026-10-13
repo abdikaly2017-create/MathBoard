@@ -50,6 +50,7 @@
     .chip{padding:5px 8px;border-radius:99px;background:#e0e7ff;font-size:12px;}
     footer{margin-top:16px;}
   </style>
+<link rel="stylesheet" href="assets/css/mathboard-upgrade.css">
 </head>
 <body>
 <div class="container">
@@ -378,5 +379,6 @@
   };
   clearResultsBtn.onclick=()=>{if(confirm('Барлық нәтижелерді өшіруді қалайсыз ба?')){saveResults([]);renderResultsTable();saveMessageEl.textContent='Барлық нәтижелер өшірілді.';saveMessageEl.style.color='var(--muted)';}};
 </script>
+<script src="assets/js/mathboard-upgrade.js" defer></script>
 </body>
 </html>
