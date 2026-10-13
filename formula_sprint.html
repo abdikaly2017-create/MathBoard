@@ -44,7 +44,11 @@ const quiz=[
   {txt:"S_шең = πr²",corr:"Шеңбер ауданы",opts:["Периметр","Шеңбер ауданы","Квадрат"]},
 ];
 let i=0, score=0,start=0, order=[...Array(quiz.length).keys()].sort(()=>Math.random()-.5);
+let answered=false;
+const explanations=["n-мүшені табу үшін бірінші мүшеге (n−1) айырымды қосамыз.","q≠1 болғанда геометриялық прогрессияның алғашқы n мүшесінің қосындысы осы формуламен табылады.","y=kx+b — k бұрыштық коэффициенті, b бос мүшесі бар сызықтық функция.","Негізгі тригонометриялық тепе-теңдік: sin²α + cos²α = 1.","Үшбұрыштың ауданы табан мен сол табанға түсірілген биіктіктің көбейтіндісінің жартысына тең.","Шеңбер ауданы радиустың квадраты мен π көбейтіндісіне тең.","Геометриялық прогрессияның n-мүшесі бірінші мүшені q санының n−1 дәрежесіне көбейту арқылы табылады."];
+quiz.forEach((q,idx)=>q.explain=explanations[idx]);
 function showq(){
+  answered=false;
   let qidx=order[i],q=quiz[qidx];
   let html=`<div class="q">${q.txt}</div>`;
   let opts=[...q.opts].sort(()=>Math.random()-.5);
@@ -55,10 +59,25 @@ function showq(){
   status.textContent=`Сұрақ ${i+1}/${quiz.length}`;
 }
 function answ(qi,ans){
-  let correct=quiz[qi].corr;
-  if(ans===correct)score++;
+  if(answered)return;
+  answered=true;
+  const q=quiz[qi],isCorrect=ans===q.corr;
+  if(isCorrect)score++;
+  sprintArea.querySelectorAll('.a-btn').forEach(btn=>btn.disabled=true);
+  const feedback=document.createElement('div');
+  feedback.className='endblock';
+  feedback.style.marginTop='12px';
+  feedback.textContent=(isCorrect?'Дұрыс! ':'Қате. Дұрыс жауап: '+q.corr+'. ')+q.explain;
+  sprintArea.appendChild(feedback);
+  const next=document.createElement('button');
+  next.className='btn';
+  next.textContent=i===quiz.length-1?'Нәтижені көру':'Келесі сұрақ';
+  next.onclick=nextq;
+  sprintArea.appendChild(next);
+}
+function nextq(){
   i++;
-  if(i<quiz.length){showq();}
+  if(i<quiz.length)showq();
   else endquiz();
 }
 function endquiz(){
