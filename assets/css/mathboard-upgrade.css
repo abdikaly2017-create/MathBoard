@@ -1,0 +1,19 @@
+/* MathBoard visual upgrade — additive, safe to load alongside existing page styles. */
+:root{--mb-accent:#6558f5;--mb-accent-2:#16b8a6;--mb-surface:rgba(255,255,255,.88);--mb-ink:#182033;--mb-muted:#657089;--mb-shadow:0 18px 50px rgba(36,44,90,.12)}
+html{scroll-behavior:smooth}
+body{position:relative;isolation:isolate}
+body::before{content:"∑   π   √   ∫   x²   ÷   Δ   ∞";position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;display:block;opacity:.035;color:var(--mb-accent);font-size:clamp(2rem,7vw,6rem);font-weight:800;letter-spacing:.15em;line-height:1.8;word-spacing:.3em;transform:rotate(-8deg);white-space:normal}
+button,a,[role=button],input,select,textarea{transition:box-shadow .18s ease,transform .18s ease,border-color .18s ease}
+button:hover,[role=button]:hover{transform:translateY(-1px)}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--mb-accent) 65%,white);outline-offset:3px}
+.mb-theme-toggle{position:fixed;right:16px;bottom:16px;z-index:9998;border:0;border-radius:999px;padding:11px 15px;background:var(--mb-accent);color:white;font:600 14px/1.2 system-ui,sans-serif;box-shadow:var(--mb-shadow);cursor:pointer}
+.mb-theme-toggle:hover{filter:brightness(1.08)}
+html.mb-dark{color-scheme:dark}
+html.mb-dark body{background-color:#101426!important;color:#e9edff!important}
+html.mb-dark body::before{opacity:.09;color:#a9a2ff}
+html.mb-dark :is(header,main,section,article,aside,footer,.card,.container,.content,.panel,.box,.quiz,.question,.game-card){background-color:rgba(25,31,53,.92);color:#e9edff;border-color:rgba(180,187,255,.18)}
+html.mb-dark :is(p,li,label,small,h1,h2,h3,h4,h5,h6,span,div){color:inherit}
+html.mb-dark :is(input,select,textarea){background:#171d33;color:#f3f5ff;border-color:#41496a}
+html.mb-dark a{color:#b8b2ff}
+@media(max-width:640px){.mb-theme-toggle{right:10px;bottom:10px;padding:10px 12px;font-size:13px}body::before{font-size:2rem;line-height:2.2}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
