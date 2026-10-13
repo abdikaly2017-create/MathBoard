@@ -5,6 +5,7 @@
   <title>Match: Формула ↔ Атауы — сәйкестендіру</title>
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <style>
+    .feedback-list{line-height:1.65;padding-left:24px}.feedback-list li{margin:6px 0}.feedback-list .correct{color:#087f5b}.feedback-list .wrong{color:#b42318}
     body{margin:0;font-family:sans-serif;background:#f8fafc;}
     .main{max-width:650px;margin:24px auto;padding:24px 10px;background:#fff;border-radius:18px;box-shadow:0 12px 32px #818cf811;}
     h1{margin:0 0 10px;color:#6366f1;}
@@ -54,11 +55,14 @@ function draw(){
 }
 function check(){
   let correct=0;
-  order.forEach((i,idx)=>{
-    let input=document.getElementById('ans'+i).value.trim().toLowerCase();
-    if(input===pairs[i].m)correct++;
+  const details=[];
+  order.forEach((i)=>{
+    const input=document.getElementById('ans'+i).value.trim().toLowerCase();
+    const p=pairs[i];
+    if(input===p.m){correct++;details.push('<li class="correct"><b>'+p.f+'</b> — дұрыс: '+p.m+') '+p.desc+'</li>');}
+    else{details.push('<li class="wrong"><b>'+p.f+'</b> — дұрыс жауабы: '+p.m+') '+p.desc+'</li>');}
   });
-  res.innerHTML="<b>Дұрыс:"+correct+"/"+pairs.length+"</b>"+(correct===pairs.length?" — Өте жақсы!":"");
+  res.innerHTML="<b>Дұрыс: "+correct+"/"+pairs.length+"</b><ol class='feedback-list'>"+details.join("")+"</ol>";
 }
 function reset(){draw();}
 reset();
