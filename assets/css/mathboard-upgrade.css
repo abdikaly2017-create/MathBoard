@@ -17,3 +17,40 @@ html.mb-dark :is(input,select,textarea){background:#171d33;color:#f3f5ff;border-
 html.mb-dark a{color:#b8b2ff}
 @media(max-width:640px){.mb-theme-toggle{right:10px;bottom:10px;padding:10px 12px;font-size:13px}body::before{font-size:2rem;line-height:2.2}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+
+/* Visible homepage refresh v2 */
+:root{--mb-accent:#5b55f5;--mb-accent-2:#12b8a6}
+body::before{
+  content:"∑   π   √   ∫   x²   ÷   Δ   ∞";
+  position:fixed;inset:-12%;z-index:0;pointer-events:none;
+  display:block;opacity:.055;color:#5b55f5;font-size:clamp(2.4rem,8vw,7rem);
+  font-weight:900;letter-spacing:.16em;line-height:1.8;word-spacing:.45em;
+  white-space:normal;transform:rotate(-10deg);
+  animation:mb-math-drift 38s linear infinite;
+}
+@keyframes mb-math-drift{0%{transform:translate3d(-1%,0,0) rotate(-10deg)}50%{transform:translate3d(1%,1%,0) rotate(-7deg)}100%{transform:translate3d(-1%,0,0) rotate(-10deg)}}
+.container{position:relative;z-index:1}
+header,.hero,.panel,.boardWrap,.slide,.card,.game-card{
+  border-radius:20px!important;
+  border:1px solid rgba(110,115,170,.16)!important;
+  box-shadow:0 14px 38px rgba(43,50,110,.09)!important;
+  backdrop-filter:blur(12px);
+}
+header{padding:14px 18px!important}
+.hero{padding:clamp(24px,4vw,48px)!important}
+.wideTitle{letter-spacing:-.035em!important;line-height:1.12!important}
+.slide{background:linear-gradient(145deg,rgba(255,255,255,.96),rgba(245,247,255,.88))!important;transition:transform .22s ease,box-shadow .22s ease!important}
+.slide:hover{transform:translateY(-5px)!important;box-shadow:0 18px 38px rgba(76,76,170,.16)!important}
+.logo,.slide .ico{box-shadow:0 8px 20px rgba(91,85,245,.18)}
+.btn,.navBtn,.tool,button{border-radius:12px}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #5b55f5;outline-offset:3px}
+@media(max-width:700px){
+ .container{padding:10px!important;margin:8px auto!important}
+ header{gap:12px;align-items:flex-start!important;flex-wrap:wrap}
+ .top-actions{flex-wrap:wrap}
+ .wideTitle{font-size:clamp(24px,7vw,34px)!important}
+ .quickNavWrap{gap:6px!important}
+ .slideViewport{width:calc(100% - 76px)!important}
+}
+@media(prefers-reduced-motion:reduce){body::before{animation:none}}
