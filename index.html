@@ -1,574 +1,65 @@
-<!DOCTYPE html>
-<html lang="kk">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>MathBoard — Басты бет</title>
-  <style>
-    :root{
-      --bg:#070A12; --bg2:#0B1020;
-      --card: rgba(255,255,255,.06);
-      --border: rgba(255,255,255,.12);
-      --text:#EAF0FF; --muted: rgba(234,240,255,.72);
-      --radius:18px; --shadow: 0 18px 60px rgba(0,0,0,.38);
-      --accent1:#22d3ee; --accent2:#7c3aed; --accent3:#f472b6;
-      --slide-w:320px;
-    }
-    body[data-theme="day"]{
-      --bg:#F6FBFF; --bg2:#FFF6FB;
-      --card: rgba(255,255,255,.94);
-      --border: rgba(17,24,39,.08);
-      --text:#07101f; --muted: rgba(11,18,32,.64);
-      --shadow: 0 18px 60px rgba(37,99,235,.08);
-    }
-
-    *{box-sizing:border-box;}
-    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;}
-    body{
-      color:var(--text);
-      background:
-        radial-gradient(1000px 600px at 8% 12%, rgba(34,211,238,.12), transparent 55%),
-        radial-gradient(800px 500px at 86% 20%, rgba(124,58,237,.10), transparent 50%),
-        linear-gradient(180deg,var(--bg),var(--bg2));
-      transition: background .22s ease, color .22s ease;
-      -webkit-font-smoothing:antialiased;
-    }
-
-    .container{max-width:1280px;margin:18px auto;padding:18px;position:relative;z-index:2;}
-    header{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:12px;background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow);backdrop-filter:blur(8px);}
-    .brand{display:flex;gap:12px;align-items:center;}
-    .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:grid;place-items:center;font-weight:900;color:#06101f;}
-    .brand h1{margin:0;font-size:18px;}
-    .brand p{margin:2px 0 0;color:var(--muted);font-size:13px;}
-    .top-actions{display:flex;gap:10px;align-items:center;}
-    .btn{padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);cursor:pointer;font-weight:800;}
-    .btn.primary{background:linear-gradient(135deg,var(--accent1),var(--accent2));border:0;color:#07101f;}
-
-    .hero{margin-top:16px;padding:20px;border-radius:14px;background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow);text-align:center;position:relative;overflow:hidden;}
-    .wideTitle{font-size:30px;font-weight:900;background:linear-gradient(90deg,var(--accent1),var(--accent2),var(--accent3));-webkit-background-clip:text;background-clip:text;color:transparent;margin:0;}
-    .wideSubtitle{margin-top:8px;color:var(--muted);max-width:980px;margin-left:auto;margin-right:auto;font-size:14px;}
-
-    /* QUICK NAV (carousel) */
-    .quickNavWrap{margin-top:18px;display:flex;gap:12px;align-items:center;justify-content:center;}
-    .navBtn{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:10px;cursor:pointer;display:inline-grid;place-items:center;width:44px;height:44px;}
-    .slideViewport{overflow:hidden;border-radius:12px;border:1px solid var(--border);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;align-items:center;width:calc(100% - 120px);max-width:980px;}
-    .slideRow{display:flex;gap:12px;padding:12px;transition:transform 320ms cubic-bezier(.2,.8,.2,1);will-change:transform;}
-    .slide{flex:0 0 var(--slide-w);min-width:var(--slide-w);border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);padding:14px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 8px 26px rgba(0,0,0,.12);text-decoration:none;color:inherit;}
-    .slide .ico{width:56px;height:56px;border-radius:10px;display:grid;place-items:center;font-weight:900;color:#06101f;background:linear-gradient(135deg,var(--accent1),var(--accent2));flex-shrink:0;}
-    .slide .txt{display:flex;flex-direction:column;gap:6px;}
-    .slide .t{font-size:15px;font-weight:900;line-height:1.05;word-break:break-word;}
-    .slide .d{font-size:13px;color:var(--muted);line-height:1.25;white-space:normal;}
-    @media(max-width:880px){:root{--slide-w:260px;} .slideViewport{width:calc(100% - 100px);} }
-    @media(max-width:600px){:root{--slide-w:240px;} .slideViewport{width:calc(100% - 80px);} }
-
-    /* Layout: left formulas, center board, right formulas */
-    .layout{display:grid;grid-template-columns:260px 1fr 260px;gap:14px;margin-top:18px;align-items:start;position:relative;z-index:3;}
-    @media(max-width:1100px){.layout{grid-template-columns:1fr;}}
-
-    .panel{padding:14px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);box-shadow:var(--shadow);min-height:160px;}
-    .panel h3{margin:0 0 10px;}
-    .form-list{display:flex;flex-direction:column;gap:10px;max-height:520px;overflow:auto;padding-right:6px;}
-    .form-item{display:flex;flex-direction:column;padding:10px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);}
-    .form-item .title{font-weight:900;font-size:13px;margin-bottom:6px;}
-    .form-item .expr{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-weight:800;font-size:15px;color:var(--accent1);}
-    .form-item .desc{font-size:12px;color:var(--muted);margin-top:6px;}
-
-    .boardWrap{padding:14px;border-radius:12px;background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow);}
-    .boardHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-    .tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
-    .tool{padding:8px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,0.03);color:var(--text);font-size:13px;}
-    canvas{width:100%;height:420px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01));border:1px solid var(--border);}
-
-    /* Games row under board */
-    .gamesRow{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px;}
-    .gcard{padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.02));border:1px solid var(--border);display:flex;flex-direction:column;gap:10px;min-height:110px;}
-    .gcard .head{display:flex;gap:10px;align-items:center;}
-    .gcard .ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-weight:900;color:#06101f;background:linear-gradient(135deg,var(--accent1),var(--accent2));}
-
-    /* Decorative background for formulas/games: soft shapes */
-    .bg-decor{
-      position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.28;
-      background-image:
-        radial-gradient(600px 250px at 6% 15%, rgba(34,211,238,.06), transparent 40%),
-        radial-gradient(450px 220px at 92% 20%, rgba(124,58,237,.06), transparent 40%),
-        radial-gradient(300px 160px at 50% 85%, rgba(244,114,182,.04), transparent 40%);
-      mix-blend-mode:screen;
-    }
-
-    /* scroll styling */
-    .form-list::-webkit-scrollbar{width:8px;}
-    .form-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:6px;}
-
-    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px;}
-  </style>
-</head>
-<body data-theme="night">
-  <div class="bg-decor" aria-hidden="true"></div>
-
-  <div class="container">
-    <header>
-      <div class="brand">
-        <div class="logo">∑</div>
-        <div>
-          <h1>MathBoard</h1>
-          <p>8–9 сынып • тақырыптар • онлайн тақта • ойындар</p>
-        </div>
-      </div>
-
-      <div class="top-actions">
-        <button id="themeBtn" class="btn">🌙 Түн</button>
-        <a class="btn" href="olympiad.html">Олимпиада</a>
-      </div>
-    </header>
-
-    <section class="hero">
-      <div>
-        <div class="wideTitle">Математика — ойлаудың тілі</div>
-        <div class="wideSubtitle">Мақсат: есепті түсініп, дәлелдеу және бірнеше тәсілмен шығару дағдыларын дамыту.</div>
-      </div>
-
-      <!-- QUICK NAV: arrows + viewport -->
-      <div class="quickNavWrap" style="margin-top:18px;">
-        <button class="navBtn" id="prevBtn" aria-label="Алдыңғы">&#8592;</button>
-
-        <div class="slideViewport" id="viewport">
-          <div class="slideRow" id="slideRow">
-            <a class="slide" href="arithm_prog.html">
-              <div class="ico" style="background:linear-gradient(135deg,#22d3ee,#60a5fa)">АП</div>
-              <div class="txt"><div class="t">Арифметикалық прогрессия</div><div class="d">aₙ = a₁ + (n−1)d · Sₙ = (n/2)(2a₁+(n−1)d)</div></div>
-            </a>
-
-            <a class="slide" href="geom_prog.html">
-              <div class="ico" style="background:linear-gradient(135deg,#a78bfa,#f472b6)">ГП</div>
-              <div class="txt"><div class="t">Геометриялық прогрессия</div><div class="d">bₙ = b₁·qⁿ⁻¹ · Sₙ = b₁*(qⁿ−1)/(q−1)</div></div>
-            </a>
-
-            <a class="slide" href="geometry_plane.html">
-              <div class="ico" style="background:linear-gradient(135deg,#34d399,#22d3ee)">△</div>
-              <div class="txt"><div class="t">Геометрия (планиметрия)</div><div class="d">S = ½ a·h · Шеңбер: S=πr², C=2πr</div></div>
-            </a>
-
-            <a class="slide" href="combinatorics.html">
-              <div class="ico" style="background:linear-gradient(135deg,#fbbf24,#fb7185)">C</div>
-              <div class="txt"><div class="t">Комбинаторика</div><div class="d">C(n,k)=n!/(k!(n−k)!) — таңдау</div></div>
-            </a>
-
-            <a class="slide" href="trig.html">
-              <div class="ico" style="background:linear-gradient(135deg,#60a5fa,#a78bfa)">sin</div>
-              <div class="txt"><div class="t">Тригонометрия</div><div class="d">sin²x+cos²x=1 · градус/радиан түрлендіру</div></div>
-            </a>
-
-            <a class="slide" href="functions.html">
-              <div class="ico" style="background:linear-gradient(135deg,#34d399,#fbbf24)">f(x)</div>
-              <div class="txt"><div class="t">Функциялар</div><div class="d">y=kx+b, y=ax²+bx+c, y=a/x — графиктер</div></div>
-            </a>
-
-            <a class="slide" href="olympiad.html">
-              <div class="ico" style="background:linear-gradient(135deg,#fb7185,#f472b6)">★</div>
-              <div class="txt"><div class="t">Олимпиада есептері</div><div class="d">20 есеп — көп тәсілді шешулер</div></div>
-            </a>
-
-            <a class="slide" href="math_literacy.html">
-              <div class="ico" style="background:linear-gradient(135deg,#22d3ee,#34d399)">ML</div>
-              <div class="txt"><div class="t">Математикалық сауаттылық</div><div class="d">10×4×10 тест жүйесі</div></div>
-            </a>
-          </div>
-        </div>
-
-        <button class="navBtn" id="nextBtn" aria-label="Келесі">&#8594;</button>
-      </div>
-
-      <div style="margin-top:12px;color:var(--muted);font-size:13px;">Слайдтарды көрсеткімен немесе сырғыту арқылы жылжытыңыз</div>
-    </section>
-
-    <!-- MAIN layout with left & right formulas and center board + games -->
-    <section class="layout">
-      <!-- LEFT formulas -->
-      <aside class="panel" aria-label="Формулалар сол жақ">
-        <h3>Негізгі формулалар — 1</h3>
-        <div class="form-list">
-          <div class="form-item">
-            <div class="title">Арифметикалық прогрессия</div>
-            <div class="expr">aₙ = a₁ + (n − 1) d</div>
-            <div class="desc">n-ші мүше</div>
-          </div>
-          <div class="form-item">
-            <div class="title">AP қоспасы</div>
-            <div class="expr">Sₙ = (n/2)(2a₁ + (n−1)d)</div>
-            <div class="desc">Алғашқы n мүшені қосу</div>
-          </div>
-          <div class="form-item">
-            <div class="title">Геометриялық прогрессия</div>
-            <div class="expr">bₙ = b₁ · qⁿ⁻¹</div>
-            <div class="desc">n-ші мүше</div>
-          </div>
-          <div class="form-item">
-            <div class="title">GP қоспасы</div>
-            <div class="expr">Sₙ = b₁·(qⁿ −1)/(q−1)</div>
-            <div class="desc">q ≠ 1</div>
-          </div>
-          <div class="form-item">
-            <div class="title">Квадраттық функция</div>
-            <div class="expr">y = ax² + bx + c</div>
-            <div class="desc">Парабола</div>
-          </div>
-        </div>
-      </aside>
-
-      <!-- CENTER board -->
-      <main class="boardWrap" aria-label="Тақта және ойындар орталығы">
-        <div class="boardHead">
-          <div>
-            <h3 style="margin:0">Онлайн тақта</h3>
-            <div style="color:var(--muted);font-size:13px;margin-top:6px;">Қалам, өшіргіш, сызғыш — тақтада жазып, график сызуға болады.</div>
-          </div>
-          <div class="tools">
-            <div class="tool">Режим:
-              <select id="mode"><option value="pen">Қалам</option><option value="eraser">Өшіргіш</option><option value="line">Сызғыш</option></select>
-            </div>
-            <div class="tool">Қалыңдық: <input id="size" type="range" min="2" max="22" value="4"></div>
-            <div class="tool">Түс: <input id="color" type="color" value="#22d3ee"></div>
-            <div class="tool"><button id="undoBtn">↶ Undo</button></div>
-            <div class="tool"><button id="clearBtn">🧽 Тазалау</button></div>
-          </div>
-        </div>
-
-        <canvas id="canvas"></canvas>
-
-        <!-- games restored under board -->
-        <div class="gamesRow" aria-label="Ойындар">
-<div class="gcard">
-  <div class="head">
-    <div class="ico" style="background:linear-gradient(135deg,#22d3ee,#7c3aed)">🏃</div>
-    <div>
-      <b>Formula Runner</b>
-      <div style="font-size:13px;color:var(--muted)">Дұрыс жауап қақпасын таңда</div>
-    </div>
-  </div>
-  <div style="margin-top:auto;display:flex;gap:8px;">
-    <a class="btn primary" href="formula_runner.html">Бастау</a>
-    <a class="btn" href="formula_runner.html">Ашу</a>
-  </div>
-</div>
-
-          <div class="gcard">
-            <div class="head"><div class="ico" style="background:linear-gradient(135deg,#22d3ee,#60a5fa)">Ф</div>
-              <div><b>Formula Sprint</b><div style="font-size:13px;color:var(--muted)">Формулаларды жылдам тану</div></div>
-            </div>
-            <div style="margin-top:auto;display:flex;gap:8px;"><a class="btn primary" href="formula_sprint.html">Бастау</a><a class="btn" href="formula_sprint.html">Ашу</a></div>
-          </div>
-
-          <div class="gcard">
-            <div class="head"><div class="ico" style="background:linear-gradient(135deg,#60a5fa,#a78bfa)">М</div>
-              <div><b>Match: Формула ↔ Атауы</b><div style="font-size:13px;color:var(--muted)">Сәйкестендіру</div></div>
-            </div>
-            <div style="margin-top:auto;display:flex;gap:8px;"><a class="btn primary" href="match_formula.html">Бастау</a><a class="btn" href="match_formula.html">Ашу</a></div>
-          </div>
-
-          <div class="gcard">
-            <div class="head"><div class="ico" style="background:linear-gradient(135deg,#fb7185,#f472b6)">Q</div>
-              <div><b>AP/GP Quest</b><div style="font-size:13px;color:var(--muted)">Прогрессия есептер</div></div>
-            </div>
-            <div style="margin-top:auto;display:flex;gap:8px;"><a class="btn primary" href="apgp_quest.html">Бастау</a><a class="btn" href="apgp_quest.html">Ашу</a></div>
-          </div>
-        </div>
-      </main>
-
-      <!-- RIGHT formulas -->
-      <aside class="panel" aria-label="Формулалар оң жақ">
-        <h3>Негізгі формулалар — 2</h3>
-        <div class="form-list">
-          <div class="form-item">
-            <div class="title">Үшбұрыш ауданы</div>
-            <div class="expr">S = ½ · a · h</div>
-            <div class="desc">Қабырға мен биіктіктен</div>
-          </div>
-          <div class="form-item">
-            <div class="title">Шеңбер</div>
-            <div class="expr">S = π r² · C = 2π r</div>
-            <div class="desc">r — радиус</div>
-          </div>
-          <div class="form-item">
-            <div class="title">Тригонометриялық тотожды</div>
-            <div class="expr">sin²x + cos²x = 1</div>
-            <div class="desc">Барлық x үшін</div>
-          </div>
-          <div class="form-item">
-            <div class="title">Комбинациялар</div>
-            <div class="expr">C(n,k) = n! / (k!(n−k)!)</div>
-            <div class="desc">n элементтен k таңдау</div>
-          </div>
-          <div class="form-item">
-            <div class="title">Сызықтық функция</div>
-            <div class="expr">y = kx + b</div>
-            <div class="desc">k — бағаның қиылысы, b — орын ауыстыру</div>
-          </div>
-        </div>
-      </aside>
-    </section>
-
-    <footer>Күн/түн режимі сақталады. Фон-декорация ұқыпты орналастырылған — формулалар мен ойындар қайта қосылды.</footer>
-  </div>
-
-  <!-- ===== Lightweight AI Chat widget (inserted for prototyping) ===== -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap">
-  <div id="mb-ai-widget" aria-live="polite" style="position:fixed;right:18px;bottom:18px;z-index:99999;font-family:Inter,system-ui,Arial;">
-    <button id="mb-ai-toggle" title="ЖИ көмекші" aria-expanded="false" style="width:56px;height:56px;border-radius:50%;border:0;background:linear-gradient(135deg,#22d3ee,#7c3aed);color:#07101f;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 8px 28px rgba(0,0,0,.25);">ЖИ</button>
-
-    <div id="mb-ai-panel" role="dialog" aria-hidden="true" style="display:none;width:380px;max-width:92vw;background:rgba(10,12,20,.96);color:#fff;border-radius:12px;margin-bottom:12px;box-shadow:0 20px 60px rgba(0,0,0,.5);overflow:hidden;">
-      <div id="mb-ai-header" style="display:flex;justify-content:space-between;align-items:center;padding:12px 12px;border-bottom:1px solid rgba(255,255,255,.04);background:linear-gradient(90deg,#0b1220,rgba(255,255,255,.02));">
-        <strong>MathBoard — ЖИ көмекші</strong>
-        <div style="display:flex;gap:8px;align-items:center">
-          <button id="mb-ai-settingsBtn" title="Параметрлер" style="background:transparent;border:0;color:inherit;cursor:pointer">⚙️</button>
-          <button id="mb-ai-close" style="background:transparent;border:0;color:inherit;cursor:pointer">✕</button>
-        </div>
-      </div>
-
-      <div id="mb-ai-body" style="padding:10px;display:flex;flex-direction:column;gap:8px;">
-        <div id="mb-ai-messages" aria-live="polite" style="height:320px;overflow:auto;display:flex;flex-direction:column-reverse;gap:8px;padding:6px;"></div>
-
-        <div id="mb-ai-controls" style="display:flex;gap:8px;">
-          <input id="mb-ai-input" placeholder="Математикалық сұрақ жаз (мыс: ∫ x dx, 2+2*5, sin(pi/3))"
-                 style="flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;">
-          <button id="mb-ai-send" style="padding:10px 12px;border-radius:8px;border:0;background:linear-gradient(90deg,#22d3ee,#7c3aed);color:#07101f;font-weight:800;cursor:pointer;">Жіберу</button>
-        </div>
-
-        <div id="mb-ai-footer" style="font-size:12px;color:rgba(255,255,255,.7);">
-          Жергілікті есептеу: Math.js — жылдам. OpenAI-ға жіберу үшін API кілтін параметрлерге енгізіңіз.
-        </div>
-      </div>
-
-      <div id="mb-ai-settings" aria-hidden="true" style="display:none;padding:10px;border-top:1px solid rgba(255,255,255,0.03);background:rgba(0,0,0,0.06);color:#fff;">
-        <label style="font-size:13px;">OpenAI API кілті (міндетті емес):
-          <input id="mb-ai-apiKey" placeholder="sk-..." style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;margin-top:6px;">
-        </label>
-        <div style="display:flex;gap:8px;margin-top:8px;">
-          <button id="mb-ai-saveKey" style="padding:8px;border-radius:8px;background:linear-gradient(90deg,#22d3ee,#7c3aed);border:0;color:#07101f;cursor:pointer">Сақтау</button>
-          <button id="mb-ai-clearKey" style="padding:8px;border-radius:8px;background:rgba(255,255,255,0.06);border:0;color:inherit;cursor:pointer">Өшіру</button>
-        </div>
-        <div style="margin-top:8px;font-size:12px;color:#bbb">ЕСКЕРТУ: Клиент жағында кілт сақтау қауіпсіз емес. Прототип үшін ғана.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Math.js and MathJax (for local eval & LaTeX rendering) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
-  <script id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-  </script>
-
-  <script>
-    // === Existing page scripts (canvas, carousel, theme) ===
-    // Theme toggle, carousel, canvas & drawing logic from previous page
-    (function(){
-      // Theme toggle
-      const THEME_KEY='mathboard_theme_v1';
-      const themeBtn=document.getElementById('themeBtn');
-      function applyTheme(t){
-        document.body.setAttribute('data-theme', t==='day'?'day':'night');
-        themeBtn.textContent = t==='day' ? '☀️ Күн' : '🌙 Түн';
-        localStorage.setItem(THEME_KEY,t);
-      }
-      applyTheme(localStorage.getItem(THEME_KEY) || 'night');
-      themeBtn.addEventListener('click', ()=> applyTheme(document.body.dataset.theme==='day'?'night':'day'));
-
-      // Carousel arrows / swipe
-      const viewport = document.getElementById('viewport');
-      const prevBtn = document.getElementById('prevBtn');
-      const nextBtn = document.getElementById('nextBtn');
-      function slideW(){ return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--slide-w')) || 320; }
-      prevBtn.addEventListener('click', ()=> viewport.scrollBy({left: - (slideW() + 12), behavior:'smooth'}));
-      nextBtn.addEventListener('click', ()=> viewport.scrollBy({left: (slideW() + 12), behavior:'smooth'}));
-
-      // Drag-to-scroll for viewport
-      (function makeDraggable(el){
-        let active=false,startX,scrollLeft;
-        el.addEventListener('mousedown', e=> { active=true; startX=e.pageX - el.offsetLeft; scrollLeft=el.scrollLeft; el.style.cursor='grabbing'; });
-        el.addEventListener('mouseleave', ()=>{ active=false; el.style.cursor=''; });
-        el.addEventListener('mouseup', ()=>{ active=false; el.style.cursor=''; });
-        el.addEventListener('mousemove', e=>{ if(!active) return; e.preventDefault(); const x = e.pageX - el.offsetLeft; const walk = (x - startX); el.scrollLeft = scrollLeft - walk; });
-        // touch
-        let tStartX=0,tScroll=0;
-        el.addEventListener('touchstart', e=>{ tStartX = e.touches[0].pageX; tScroll = el.scrollLeft; }, {passive:true});
-        el.addEventListener('touchmove', e=>{ const dx = e.touches[0].pageX - tStartX; el.scrollLeft = tScroll - dx; }, {passive:true});
-      })(viewport);
-
-      // Canvas draw
-      const canvas=document.getElementById('canvas'), ctx=canvas.getContext('2d');
-      const modeEl=document.getElementById('mode'), sizeEl=document.getElementById('size'), colorEl=document.getElementById('color');
-      let drawing=false,lastX=0,lastY=0,lineStart=null,history=[];
-      function fitCanvas(){
-        const r=canvas.getBoundingClientRect(), dpr=window.devicePixelRatio||1;
-        canvas.width=Math.floor(r.width*dpr);
-        canvas.height=Math.floor(r.height*dpr);
-        ctx.setTransform(dpr,0,0,dpr,0,0);
-        if(history.length){
-          const img=new Image(); img.onload=()=>ctx.drawImage(img,0,0,r.width,r.height); img.src=history[history.length-1];
-        } else { ctx.clearRect(0,0,canvas.width,canvas.height); }
-      }
-      function snapshot(){ history.push(canvas.toDataURL()); if(history.length>12) history.shift(); }
-      function getPos(e){ const r=canvas.getBoundingClientRect(); const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left; const y=(e.touches?e.touches[0].clientY:e.clientY)-r.top; return {x,y}; }
-      function start(e){ e.preventDefault(); const {x,y}=getPos(e); const mode=modeEl.value; if(mode==='line'){ if(!lineStart){ lineStart={x,y}; } else { snapshot(); ctx.save(); ctx.lineCap='round'; ctx.lineJoin='round'; ctx.lineWidth=+sizeEl.value; ctx.strokeStyle=colorEl.value; ctx.beginPath(); ctx.moveTo(lineStart.x,lineStart.y); ctx.lineTo(x,y); ctx.stroke(); ctx.restore(); lineStart=null; } return; } snapshot(); drawing=true; lastX=x; lastY=y; }
-      function move(e){ if(!drawing) return; e.preventDefault(); const {x,y}=getPos(e); const mode=modeEl.value; ctx.save(); ctx.lineCap='round'; ctx.lineJoin='round'; ctx.lineWidth=+sizeEl.value; if(mode==='eraser'){ ctx.globalCompositeOperation='destination-out'; ctx.strokeStyle='rgba(0,0,0,1)'; } else { ctx.globalCompositeOperation='source-over'; ctx.strokeStyle=colorEl.value; } ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(x,y); ctx.stroke(); ctx.restore(); lastX=x; lastY=y; }
-      function end(){ drawing=false; }
-      document.getElementById('clearBtn').onclick=()=>{ snapshot(); ctx.clearRect(0,0,canvas.width,canvas.height); lineStart=null; };
-      document.getElementById('undoBtn').onclick=()=>{ if(history.length<2) return; history.pop(); const img=new Image(); img.onload=()=>{ const r=canvas.getBoundingClientRect(); ctx.clearRect(0,0,canvas.width,canvas.height); ctx.drawImage(img,0,0,r.width,r.height); }; img.src=history[history.length-1]; lineStart=null; };
-      canvas.addEventListener('mousedown',start); canvas.addEventListener('mousemove',move); window.addEventListener('mouseup',end);
-      canvas.addEventListener('touchstart',start,{passive:false}); canvas.addEventListener('touchmove',move,{passive:false}); window.addEventListener('touchend',end);
-      window.addEventListener('resize',fitCanvas);
-      fitCanvas(); snapshot();
-    })();
-  </script>
-
-  <!-- ===== Widget logic (Math.js + optional OpenAI client-side calls) ===== -->
-  <script>
-    (function(){
-      const toggleBtn = document.getElementById('mb-ai-toggle');
-      const panel = document.getElementById('mb-ai-panel');
-      const closeBtn = document.getElementById('mb-ai-close');
-      const sendBtn = document.getElementById('mb-ai-send');
-      const input = document.getElementById('mb-ai-input');
-      const messages = document.getElementById('mb-ai-messages');
-      const settingsBtn = document.getElementById('mb-ai-settingsBtn');
-      const settingsPane = document.getElementById('mb-ai-settings');
-      const apiKeyInput = document.getElementById('mb-ai-apiKey');
-      const saveKeyBtn = document.getElementById('mb-ai-saveKey');
-      const clearKeyBtn = document.getElementById('mb-ai-clearKey');
-
-      const STORAGE_KEY = 'mathboard_ai_apikey_v1';
-
-      // Toggle panel
-      toggleBtn.addEventListener('click', ()=>{
-        const visible = panel.style.display === 'block';
-        panel.style.display = visible ? 'none' : 'block';
-        toggleBtn.setAttribute('aria-expanded', !visible);
-        if(!visible) input.focus();
-      });
-      closeBtn.addEventListener('click', ()=>{ panel.style.display = 'none'; });
-
-      settingsBtn.addEventListener('click', ()=>{
-        const vis = settingsPane.style.display === 'block';
-        settingsPane.style.display = vis ? 'none' : 'block';
-      });
-
-      // Load saved key (if any) into field
-      const storedKey = localStorage.getItem(STORAGE_KEY);
-      if(storedKey) apiKeyInput.value = storedKey;
-
-      saveKeyBtn.addEventListener('click', ()=>{
-        const k = apiKeyInput.value.trim();
-        if(!k){ alert('Кілт бос — енгізіңіз немесе өшіріңіз.'); return; }
-        localStorage.setItem(STORAGE_KEY, k);
-        alert('API кілті сақталды (локалStorage). Қауіпсіздікке назар аударыңыз.');
-      });
-      clearKeyBtn.addEventListener('click', ()=>{
-        localStorage.removeItem(STORAGE_KEY);
-        apiKeyInput.value='';
-        alert('API кілті өшірілді.');
-      });
-
-      function addMessageHTML(html, from='bot'){
-        const el = document.createElement('div');
-        el.className = 'mb-msg ' + (from==='user' ? 'user' : 'bot');
-        el.style.padding = '8px';
-        el.style.borderRadius = '8px';
-        el.style.maxWidth = '100%';
-        el.style.wordBreak = 'break-word';
-        if(from==='user'){
-          el.style.background = 'linear-gradient(90deg,#22d3ee20,#7c3aed20)';
-          el.style.alignSelf = 'flex-end';
-          el.style.color = '#07101f';
-          el.style.fontWeight = '700';
-        } else {
-          el.style.background = 'rgba(255,255,255,0.03)';
-          el.style.border = '1px solid rgba(255,255,255,0.04)';
-          el.style.alignSelf = 'flex-start';
-        }
-        el.innerHTML = html;
-        messages.prepend(el);
-        if(window.MathJax && MathJax.typesetPromise){
-          MathJax.typesetPromise([el]).catch(()=>{});
-        }
-      }
-
-      function escapeHtml(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
-
-      // Try to evaluate locally using math.js
-      function tryLocalEval(q){
-        try {
-          let expr = q.replaceAll('π','pi').replaceAll('√','sqrt').replaceAll('^','**');
-          // allow letters for functions like sin, cos, log, but disallow suspicious chars
-          const safe = /^[0-9+\-*/^()., %a-zA-Zπ√]+$/.test(expr);
-          if(!safe) return null;
-          const res = math.evaluate(expr);
-          return (typeof res === 'number' || typeof res === 'string' || math.typeOf(res) === 'BigNumber') ? res : String(res);
-        } catch(e){ return null; }
-      }
-
-      // OpenAI direct call (client-side) — prototyping only
-      async function queryOpenAI(question){
-        const key = localStorage.getItem(STORAGE_KEY);
-        if(!key) throw new Error('API кілті жоқ (Параметрлерден орнатыңыз).');
-        const system = `Сіз математика оқытушысы. Сұраққа қазақша қысқа әрі нақты жауап беріңіз. Егер есеп болса — шешудің қадамдарын LaTeX-те көрсетіңіз.`;
-        const payload = {
-          model: "gpt-3.5-turbo",
-          messages: [
-            {role: "system", content: system},
-            {role: "user", content: question}
-          ],
-          max_tokens: 800,
-          temperature: 0.2
-        };
-        const resp = await fetch('https://api.openai.com/v1/chat/completions', {
-          method: 'POST',
-          headers: { 'Content-Type':'application/json', 'Authorization': 'Bearer ' + key },
-          body: JSON.stringify(payload)
-        });
-        if(!resp.ok){
-          const t = await resp.text();
-          throw new Error('OpenAI қатесі: '+ resp.status + ' — ' + t);
-        }
-        const data = await resp.json();
-        const content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
-        return content || 'Жауап табылмады.';
-      }
-
-      async function handleSend(){
-        const q = input.value.trim();
-        if(!q) return;
-        addMessageHTML('<b>Сіз:</b> ' + escapeHtml(q), 'user');
-        input.value = '';
-        const local = tryLocalEval(q);
-        if(local !== null){
-          addMessageHTML(`<b>Жауап (жергілікті):</b> \$${escapeHtml(String(local))}\$`, 'bot');
-          return;
-        }
-        if(local === null && !localStorage.getItem(STORAGE_KEY)){
-          addMessageHTML(`<b>ЖИ:</b> Жергілікті шешім табылмады. Егер толық жауап қажет болса, параметрлерден OpenAI API кілтін қойып, қайтадан жіберіңіз.`, 'bot');
-          return;
-        }
-        addMessageHTML('<i>Жауап ізделуде...</i>', 'bot');
-        try {
-          const answer = await queryOpenAI(q);
-          const safe = escapeHtml(answer).replace(/\n/g,'<br>');
-          addMessageHTML(`<b>ЖИ:</b> ${safe}`, 'bot');
-        } catch(err){
-          addMessageHTML(`<b>Қате:</b> ${escapeHtml(err.message)}`, 'bot');
-        }
-      }
-
-      sendBtn.addEventListener('click', handleSend);
-      input.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); handleSend(); } });
-
-      // Welcome
-      addMessageHTML('<b>ЖИ:</b> Сәлем! Математикалық сұрағыңыз бар ма? (мыс: 2+2*5, sqrt(121), ∫ x dx)');
-      // Click message to copy
-      messages.addEventListener('click', (e)=>{
-        const m = e.target.closest('.mb-msg');
-        if(!m) return;
-        input.value = m.textContent.replace(/^ЖИ:|Сіз:/g,'').trim();
-      });
-    })();
-  </script>
-</body>
-</html>
+<!doctype html>
+<html lang="kk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b1020"><meta name="description" content="8–9 сыныпқа арналған интерактивті алгебра, геометрия және есеп шығару тақтасы."><title>MathBoard — математиканы түсініп үйрен</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
+:root{--bg:#0b1020;--panel:#111a30;--panel2:#151f38;--text:#f2f5ff;--muted:#a0abc4;--line:rgba(174,191,231,.14);--cyan:#72eadb;--violet:#9b8cff;--lime:#c7f36b;--shadow:0 22px 70px #03061155}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:85px}body{margin:0;background:var(--bg);color:var(--text);font-family:Manrope,Arial,sans-serif;line-height:1.6;overflow-x:hidden}body.light{--bg:#f5f7ff;--panel:#fff;--panel2:#eef2ff;--text:#151b31;--muted:#626d89;--line:#dce2f3;--shadow:0 18px 55px #27335a18}.ambient{position:fixed;width:420px;height:420px;filter:blur(100px);opacity:.13;border-radius:50%;pointer-events:none;z-index:-1}.ambient.one{background:#6a5cff;top:50px;left:-180px}.ambient.two{background:#2bd8ca;top:520px;right:-260px}.topbar{height:78px;max-width:1200px;padding:0 25px;margin:auto;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}.brand{display:flex;gap:11px;align-items:center;text-decoration:none;color:var(--text);font-weight:800;font-size:18px;line-height:1.2}.brand-mark{width:43px;height:43px;border-radius:14px;display:grid;place-items:center;color:#101528;background:linear-gradient(135deg,var(--cyan),var(--lime));font-size:28px}.brand-light{color:var(--cyan)}.brand small{display:block;font:9px 'DM Mono',monospace;letter-spacing:1.7px;color:var(--muted);margin-top:5px}.topbar nav{display:flex;gap:28px}.topbar nav a,footer a{color:var(--muted);font-size:12px;text-decoration:none}.topbar nav a:hover,footer a:hover{color:var(--cyan)}button{font-family:inherit}.theme-toggle{border:1px solid var(--line);background:var(--panel);color:var(--text);width:40px;height:40px;border-radius:13px;cursor:pointer;font-size:19px}.hero{max-width:1200px;margin:auto;padding:80px 25px 70px;display:grid;grid-template-columns:1fr .9fr;align-items:center;gap:35px;min-height:570px}.eyebrow{font:11px 'DM Mono',monospace;letter-spacing:2px;color:var(--cyan);display:flex;align-items:center;gap:9px}.live-dot{width:7px;height:7px;background:var(--lime);border-radius:50%;box-shadow:0 0 15px var(--lime)}h1{font-size:clamp(48px,6.4vw,78px);line-height:1.08;letter-spacing:-4px;margin:24px 0 22px;font-weight:800}h1 span{background:linear-gradient(100deg,var(--cyan),var(--violet));color:transparent;background-clip:text}.hero-text{max-width:570px;color:var(--muted);font-size:15px;line-height:1.9}.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:27px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:13px;padding:13px 18px;border-radius:12px;text-decoration:none;font:700 12px Manrope,sans-serif;cursor:pointer;transition:transform .2s;border:1px solid transparent}.btn:hover{transform:translateY(-2px)}.btn-primary{background:var(--cyan);color:#10182a}.btn-ghost{border-color:var(--line);color:var(--text);background:var(--panel)}.hero-stats{display:flex;gap:34px;margin-top:40px}.hero-stats div{display:flex;flex-direction:column}.hero-stats strong{font-size:25px}.hero-stats span{font-size:11px;color:var(--muted)}.hero-art{height:390px;position:relative;display:grid;place-items:center}.orbit{position:absolute;border:1px solid var(--line);border-radius:50%;transform:rotate(-23deg)}.orbit.a{width:360px;height:235px}.orbit.b{width:295px;height:345px;transform:rotate(42deg);border-color:#9b8cff38}.math-core{width:165px;height:165px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 25%,#27395c,#10172b 70%);border:1px solid #72eadb5e;box-shadow:0 0 75px #72eadb15,inset 0 0 45px #9b8cff12;z-index:1}.math-core span{font-size:74px;color:var(--cyan);line-height:1}.math-core small{font:9px 'DM Mono',monospace;letter-spacing:2px;color:#a0abc4;text-align:center;margin-top:7px}.formula,.float-note{position:absolute;background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);padding:11px 14px;border-radius:12px;font:13px 'DM Mono',monospace;color:var(--cyan);animation:float 5s ease-in-out infinite}.formula.a{top:45px;left:3%;transform:rotate(-7deg)}.formula.b{top:55px;right:6%;color:var(--violet);animation-delay:-1s}.formula.c{bottom:66px;left:6%;color:var(--lime);animation-delay:-2s}.formula.d{bottom:40px;right:6%;animation-delay:-3s}.float-note{top:48%;right:-2%;font-size:10px;color:var(--text)}@keyframes float{0%,100%{translate:0 0}50%{translate:0 -9px}}.section{max-width:1200px;margin:auto;padding:55px 25px}.section-heading{display:flex;align-items:end;justify-content:space-between;gap:25px;margin-bottom:27px}.section-heading h2,.solver-copy h2,.practice-banner h2{font-size:clamp(28px,3.5vw,40px);letter-spacing:-1.5px;line-height:1.2;margin:12px 0 0}.section-heading>p{max-width:410px;font-size:13px;color:var(--muted);margin:0}.course-grid{display:grid;grid-template-columns:1fr 1fr;gap:17px}.course-card{padding:26px;border:1px solid var(--line);border-radius:21px;background:linear-gradient(145deg,var(--panel),#111a30aa);min-height:235px;transition:transform .2s,border-color .2s}.course-card:hover{transform:translateY(-4px);border-color:#72eadb70}.course-top,.course-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px}.course-icon{font:28px 'DM Mono',monospace;color:var(--cyan);background:#72eadb12;width:54px;height:54px;border-radius:15px;display:grid;place-items:center}.geometry .course-icon{color:var(--violet);background:#9b8cff15}.pill{border:1px solid var(--line);padding:5px 10px;border-radius:20px;color:var(--muted);font-size:10px}.course-card h3{font-size:24px;margin:17px 0 6px}.course-card p{color:var(--muted);font-size:13px}.course-bottom{margin-top:20px;padding-top:15px;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}.course-bottom a{color:var(--cyan);text-decoration:none;font-weight:700}.filters{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.filter{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:8px 11px;border-radius:9px;font:600 11px Manrope;cursor:pointer}.filter.active,.filter:hover{background:var(--cyan);border-color:var(--cyan);color:#10182a}.topics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.topic-card{display:block;text-decoration:none;color:var(--text);padding:19px;border:1px solid var(--line);border-radius:16px;background:var(--panel);transition:transform .2s,border-color .2s}.topic-card:hover{transform:translateY(-3px);border-color:var(--cyan)}.topic-meta{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font:9px 'DM Mono',monospace}.topic-card h3{font-size:15px;line-height:1.45;margin:14px 0 8px}.topic-card p{font-size:11px;color:var(--muted);margin:0 0 14px}.topic-open{color:var(--cyan);font-size:11px;font-weight:800}.solver-card{display:grid;grid-template-columns:1fr 365px;gap:38px;align-items:center;padding:38px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(130deg,var(--panel),#171b37)}.solver-copy p{color:var(--muted);font-size:14px;max-width:470px;line-height:1.9}.solver-tips{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}.solver-tips span{font:11px 'DM Mono',monospace;padding:8px 10px;border:1px solid var(--line);border-radius:9px;color:var(--cyan)}.calculator{padding:18px;border:1px solid var(--line);background:var(--bg);border-radius:18px}.calc-label{font:9px 'DM Mono',monospace;color:var(--muted);letter-spacing:1.5px;margin-bottom:10px}.calc-display{width:100%;padding:12px;border:1px solid var(--line);background:var(--panel);border-radius:9px;color:var(--text);font:13px 'DM Mono',monospace;outline:none}.calc-display:focus{border-color:var(--cyan)}.calc-result{min-height:29px;color:var(--cyan);font:12px 'DM Mono',monospace;padding:9px 2px 0}.calc-keys{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:10px}.calc-keys button{border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text);padding:10px;cursor:pointer;font:13px 'DM Mono',monospace}.calc-keys button:hover{border-color:var(--cyan);color:var(--cyan)}.calc-submit{width:100%;margin-top:10px}.practice-banner{display:flex;align-items:center;justify-content:space-between;gap:25px;border:1px solid #72eadb35;border-radius:21px;padding:28px;background:linear-gradient(110deg,#72eadb0d,#9b8cff10)}.practice-banner p{color:var(--muted);font-size:13px;max-width:600px}footer{max-width:1200px;margin:20px auto 0;padding:27px 25px 35px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:20px}footer>span{font-size:11px;color:var(--muted)}.footer-brand{font-size:15px}.footer-brand .brand-mark{width:34px;height:34px;font-size:22px}.footer-brand small{font-size:8px}.modal{position:fixed;inset:0;background:#050812c9;z-index:30;display:none;overflow:auto;padding:25px}.modal.open{display:block}.modal-panel{max-width:820px;margin:20px auto;background:var(--bg);border:1px solid var(--line);border-radius:20px;padding:27px}.modal-head{display:flex;justify-content:space-between;align-items:start;gap:20px}.modal-head h2{margin:9px 0;font-size:clamp(24px,4vw,36px)}.close{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:8px 13px;cursor:pointer}.rule-card{border:1px solid var(--line);background:var(--panel);padding:18px;border-radius:14px;margin:18px 0}.rule-card p{color:var(--muted);margin-bottom:0}.question{padding:17px 0;border-top:1px solid var(--line)}.question h3{font-size:14px;margin:0 0 12px}.answers{display:grid;grid-template-columns:1fr 1fr;gap:8px}.answer{border:1px solid var(--line);border-radius:9px;padding:10px;background:var(--panel);color:var(--text);text-align:left;cursor:pointer;font:12px Manrope}.answer.selected{border-color:var(--cyan);background:#72eadb16}.answer.correct{border-color:#a8e66a;background:#a8e66a17}.answer.wrong{border-color:#ff8585;background:#ff858510}.explanation{font-size:12px;color:var(--muted);margin-top:8px}.hidden{display:none}.score{font-weight:800;color:var(--cyan);margin-top:15px}@media(max-width:850px){.hero{grid-template-columns:1fr;padding-top:60px;gap:0}.hero-art{height:320px;max-width:560px;width:100%;margin:auto}.section-heading{align-items:flex-start;flex-direction:column}.topics-grid{grid-template-columns:repeat(2,1fr)}.solver-card{grid-template-columns:1fr 320px;padding:24px;gap:22px}.topbar nav{gap:13px}.topbar nav a{font-size:11px}}@media(max-width:600px){.topbar{height:68px;padding:0 15px}.topbar nav{display:none}.hero{padding:48px 19px 30px;min-height:0}.hero h1{letter-spacing:-2.8px}.hero-text{font-size:13px}.hero-stats{gap:22px;margin-top:32px}.hero-art{height:275px;transform:scale(.88);margin:-4px -15px}.orbit.a{width:300px}.orbit.b{height:290px}.math-core{width:132px;height:132px}.math-core span{font-size:58px}.formula{font-size:10px;padding:8px 10px}.float-note{right:-5%;font-size:9px}.section{padding:43px 17px}.course-grid,.topics-grid{grid-template-columns:1fr}.course-card{padding:21px}.filters{justify-content:flex-start}.solver-card{grid-template-columns:1fr;padding:20px}.calculator{width:100%}.practice-banner{align-items:flex-start;flex-direction:column;padding:21px}footer{padding:24px 17px;flex-wrap:wrap}footer>span{order:3;width:100%}.answers{grid-template-columns:1fr}.modal{padding:10px}.modal-panel{padding:17px;margin:5px auto}.section-heading h2,.solver-copy h2,.practice-banner h2{font-size:29px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
+</style></head><body><div class="ambient one"></div><div class="ambient two"></div>
+<header class="topbar"><a class="brand" href="#"><span class="brand-mark">∑</span><span>Math<span class="brand-light">Board</span><small>МАТЕМАТИКА ЗЕРТХАНАСЫ</small></span></a><nav><a href="#courses">Курстар</a><a href="#solver">Есептеу тақтасы</a><a href="#topic-list">Тесттер</a></nav><button class="theme-toggle" id="themeToggle" aria-label="Түсті ауыстыру">☼</button></header>
+<main><section class="hero"><div><div class="eyebrow"><span class="live-dot"></span> 8–9 СЫНЫП · ИНТЕРАКТИВТІ ОҚУ</div><h1>Математиканы<br><span>түсініп үйрен.</span></h1><p class="hero-text">Формулаларды жаттап қана қоймай, логикасын түсін. Алгебра, геометрия, есеп шығару тақтасы және әр тақырыпқа арналған 10 сұрақтық тест — бір жерде.</p><div class="hero-actions"><a class="btn btn-primary" href="#courses">Оқуды бастау ↗</a><a class="btn btn-ghost" href="#solver">Есептеу тақтасы</a></div><div class="hero-stats"><div><strong>2</strong><span>негізгі бағыт</span></div><div><strong>8–9</strong><span>сыныптар</span></div><div><strong>10</strong><span>тест сұрағы / тақырып</span></div></div></div><div class="hero-art"><div class="orbit a"></div><div class="orbit b"></div><div class="formula a">a² + b² = c²</div><div class="formula b">√x</div><div class="formula c">f(x)</div><div class="formula d">π ≈ 3.14</div><div class="math-core"><span>∑</span><small>THINK<br>LOGICALLY</small></div><div class="float-note">x² − 5x + 6 = 0　→</div></div></section>
+<section class="section" id="courses"><div class="section-heading"><div><div class="eyebrow">БІЛІМ БАҒЫТТАРЫ</div><h2>Қай бағыттан бастаймыз?</h2></div><p>Сыныбыңды және тақырыпты таңда. Әр тақырыпта қысқаша ереже мен 10 тест бар.</p></div><div class="course-grid"><article class="course-card algebra"><div class="course-top"><span class="course-icon">x²</span><span class="pill">8–9 сынып</span></div><h3>Алгебра</h3><p>Өрнектер, теңдеулер, функциялар, теңсіздіктер және прогрессиялар.</p><div class="course-bottom"><span>2 сынып · 12 тақырып</span><a href="#topic-list" data-kind-link="algebra">Тақырыптарды ашу ↗</a></div></article><article class="course-card geometry"><div class="course-top"><span class="course-icon">△</span><span class="pill">8–9 сынып</span></div><h3>Геометрия</h3><p>Үшбұрыштар, төртбұрыштар, шеңбер, ұқсастық және векторлар.</p><div class="course-bottom"><span>2 сынып · 12 тақырып</span><a href="#topic-list" data-kind-link="geometry">Тақырыптарды ашу ↗</a></div></article></div></section>
+<section class="section" id="topic-list"><div class="section-heading"><div><div class="eyebrow">ТАҚЫРЫПТАР КІТАПХАНАСЫ</div><h2>Оқу жоспарыңды таңда</h2></div><div class="filters"><button class="filter active" data-grade="all">Барлығы</button><button class="filter" data-grade="8">8-сынып</button><button class="filter" data-grade="9">9-сынып</button><button class="filter" data-kind="algebra">Алгебра</button><button class="filter" data-kind="geometry">Геометрия</button></div></div><div id="topicsGrid" class="topics-grid"></div></section>
+<section class="section" id="solver"><div class="solver-card"><div class="solver-copy"><div class="eyebrow">ЖЫЛДАМ ҚҰРАЛ</div><h2>Есептеу тақтасы</h2><p>Өрнекті енгізіп, нәтижесін есепте. Жақша, дәреже, көбейту, бөлу және квадрат түбір қолжетімді.</p><div class="solver-tips"><span>sqrt(25)</span><span>2^3 + 4</span><span>(12-4)/2</span></div></div><div class="calculator"><div class="calc-label">MATHBOARD CALCULATOR</div><input id="calcDisplay" class="calc-display" placeholder="Мысалы: (12 + 8) / 4" aria-label="Өрнек енгізу"><div class="calc-result" id="calcResult">Нәтиже осында көрінеді</div><div class="calc-keys"><button data-insert="7">7</button><button data-insert="8">8</button><button data-insert="9">9</button><button data-insert="/">÷</button><button data-insert="4">4</button><button data-insert="5">5</button><button data-insert="6">6</button><button data-insert="*">×</button><button data-insert="1">1</button><button data-insert="2">2</button><button data-insert="3">3</button><button data-insert="-">−</button><button data-insert="0">0</button><button data-insert=".">.</button><button data-insert="^">xʸ</button><button data-insert="+">+</button><button data-insert="sqrt(">√</button><button data-insert="(">(</button><button data-insert=")">)</button><button id="clearCalc">C</button></div><button class="btn btn-primary calc-submit" id="solveCalc">Есептеу =</button></div></div></section>
+<section class="section"><div class="practice-banner"><div><div class="eyebrow">КҮНДЕЛІКТІ ЖАТТЫҒУ</div><h2>Бір есеп — бір қадам алға.</h2><p>Кез келген тақырыпты ашып, 10 сұрақтан тұратын тестті орында. Соңында нәтижең мен дұрыс жауаптар көрсетіледі.</p></div><a class="btn btn-primary" href="#topic-list">Тест таңдау ↗</a></div></section></main>
+<footer><a class="brand footer-brand" href="#"><span class="brand-mark">∑</span><span>MathBoard<small>ОҚУ · ОЙЛАУ · ШЕШУ</small></span></a><span>Математиканы түсіну — сенің қолыңда.</span><a href="#">Жоғары ↑</a></footer>
+<div class="modal" id="lessonModal" role="dialog" aria-modal="true" aria-labelledby="lessonTitle"><div class="modal-panel"><div class="modal-head"><div><div class="eyebrow" id="lessonMeta">ТАҚЫРЫП</div><h2 id="lessonTitle"></h2><p id="lessonDesc" style="color:var(--muted);font-size:13px"></p></div><button class="close" id="closeModal">✕</button></div><div class="rule-card"><div class="eyebrow">ҚЫСҚАША ТЕОРИЯ</div><p id="lessonRule"></p></div><div class="eyebrow">ӨЗІҢДІ ТЕКСЕР</div><h3>10 есептік тест</h3><p style="color:var(--muted);font-size:12px">Әр сұраққа бір жауап таңда. Соңында нәтижені тексер.</p><form id="quizForm"><div id="questions"></div><button class="btn btn-primary" type="submit">Нәтижені тексеру</button><button class="btn btn-ghost" type="button" id="retry">Қайта бастау</button><div id="score" class="score" aria-live="polite"></div></form></div></div>
+<script>
+const topics=[
+[8,'algebra','Рационал өрнектер','Бөлшек өрнектерді ықшамдау және анықталу облысы.','Бөлшектің бөлімі нөлге тең болмауы керек. Ортақ көбейткіштерді қысқартқанда шектеулер сақталады.','rational'],
+[8,'algebra','Квадрат түбірлер','Түбір қасиеттері, көбейткішті түбір астынан шығару.','a ≥ 0 болса, √(a²)=|a|. √(ab)=√a·√b (a,b ≥ 0).','roots'],
+[8,'algebra','Квадрат теңдеулер','Дискриминант, түбірлер және Виет теоремасы.','ax²+bx+c=0 теңдеуінде D=b²−4ac. D>0 болса екі, D=0 болса бір нақты түбір бар.','quadratic'],
+[8,'algebra','Квадраттық функция','Парабола, төбесі, осі және графигі.','y=ax²+bx+c параболасының төбесінің абсциссасы x₀=−b/(2a). a>0 болса тармақтары жоғары бағытталады.','parabola'],
+[8,'algebra','Теңсіздіктер','Сызықтық және квадрат теңсіздіктерді шешу.','Теңсіздіктің екі жағын теріс санға көбейткенде немесе бөлгенде белгі бағыты өзгереді.','inequality'],
+[8,'algebra','Статистика элементтері','Орташа мән, медиана, мода және ауқым.','Арифметикалық орта — мәндердің қосындысын олардың санына бөлу. Медиана — реттелген қатардың ортаңғы мәні.','statistics'],
+[8,'geometry','Төртбұрыштар','Параллелограмм, ромб, тіктөртбұрыш және шаршы.','Параллелограммның қарама-қарсы қабырғалары тең, диагональдары қиылысу нүктесінде қақ бөлінеді.','quadrilaterals'],
+[8,'geometry','Үшбұрыштар және теңдік белгілері','Қабырғалар мен бұрыштар арқылы үшбұрыштарды салыстыру.','Үшбұрыш теңдігін үш қабырға, екі қабырға мен олардың арасындағы бұрыш немесе бір қабырға мен екі іргелес бұрыш арқылы анықтайды.','triangles'],
+[8,'geometry','Пифагор теоремасы','Тікбұрышты үшбұрыштың қабырғаларын есептеу.','Тікбұрышты үшбұрышта c²=a²+b², мұндағы c — гипотенуза.','pythagoras'],
+[8,'geometry','Аудан формулалары','Үшбұрыш, параллелограмм, трапеция және ромб аудандары.','Үшбұрыш S=ah/2, параллелограмм S=ah, трапеция S=(a+b)h/2.','areas'],
+[8,'geometry','Шеңбер және дөңгелек','Радиус, диаметр, ұзындық және аудан.','Шеңбер ұзындығы C=2πr, дөңгелек ауданы S=πr², диаметр d=2r.','circle'],
+[8,'geometry','Ұқсас үшбұрыштар','Ұқсастық коэффициенті және пропорционал қабырғалар.','Ұқсас фигуралардың сәйкес қабырғалары пропорционал. Ұқсастық коэффициенті k болса, аудандар қатынасы k².','similarity'],
+[9,'algebra','Квадраттық функция және график','Парабола графигін түрлендіру және қасиеттері.','y=a(x−h)²+k функциясының төбесі (h,k). a таңбасы параболаның бағытын анықтайды.','quadratic-graphs'],
+[9,'algebra','Квадрат теңдеуге келтірілетін теңдеулер','Биквадрат және бөлшек-рационал теңдеулер.','Биквадрат теңдеуде t=x² деп белгілеп, at²+bt+c=0 түріне келтіреді. Соңында x²=t шартын тексереді.','reducible'],
+[9,'algebra','Теңдеулер жүйесі','Екі айнымалысы бар жүйелерді шешу.','Жүйені алмастыру немесе қосу тәсілімен шешуге болады. Табылған жұп екі теңдеуді де қанағаттандыруы тиіс.','systems'],
+[9,'algebra','Теңсіздіктер жүйесі','Интервалдар әдісі және шешімдер жиыны.','Жүйенің шешімі — барлық теңсіздіктердің шешімдеріне ортақ жиын.','systems-ineq'],
+[9,'algebra','Арифметикалық прогрессия','Айырымы, n-ші мүшесі және қосындысы.','aₙ=a₁+(n−1)d; Sₙ=n(a₁+aₙ)/2.','arithmetic'],
+[9,'algebra','Геометриялық прогрессия','Еселік, n-ші мүшесі және қосындысы.','bₙ=b₁qⁿ⁻¹. q≠1 болса Sₙ=b₁(qⁿ−1)/(q−1).','geometric'],
+[9,'algebra','Ықтималдық және статистика','Оқиға ықтималдығы, таңдама және деректер.','Тең мүмкіндікті нәтижелерде P(A)=қолайлы нәтижелер саны / барлық нәтижелер саны.','probability'],
+[9,'algebra','Функциялар және түрлендірулер','Функция мәні, анықталу облысы және графиктер.','y=f(x) функциясында әрбір x мәніне бір ғана y мәні сәйкес келеді.','functions'],
+[9,'geometry','Векторлар','Векторларды қосу, азайту және санға көбейту.','Векторларды қосуда үшбұрыш немесе параллелограмм ережесі қолданылады. Қарама-қарсы векторлардың бағыттары қарама-қарсы.','vectors'],
+[9,'geometry','Тікбұрышты үшбұрыштағы тригонометрия','Синус, косинус және тангенс.','sin α=қарсы катет/гипотенуза; cos α=іргелес катет/гипотенуза; tg α=қарсы катет/іргелес катет.','trig'],
+[9,'geometry','Шеңбердегі бұрыштар','Іштей сызылған және центрлік бұрыштар.','Бір доғаға тірелетін іштей сызылған бұрыш сол доғаның центрлік бұрышының жартысына тең.','circle-angles'],
+[9,'geometry','Көпбұрыштар','Ішкі бұрыштар қосындысы және дұрыс көпбұрыштар.','n-бұрыштың ішкі бұрыштарының қосындысы (n−2)·180°.','polygons'],
+[9,'geometry','Үшбұрыштарды шешу','Синустар теоремасы және қабырғалар қатынасы.','Синустар теоремасы: a/sin A=b/sin B=c/sin C.','triangle-solving'],
+[9,'geometry','Координаталық әдіс','Екі нүкте арақашықтығы және орта нүкте.','A(x₁,y₁), B(x₂,y₂) болса, AB=√((x₂−x₁)²+(y₂−y₁)²).','coordinates']
+].map(([grade,kind,title,desc,rule,id])=>({grade,kind,title,desc,rule,id}));
+const grid=document.getElementById('topicsGrid');let gradeFilter='all',kindFilter='all';
+function render(){grid.innerHTML=topics.filter(t=>(gradeFilter==='all'||String(t.grade)===gradeFilter)&&(kindFilter==='all'||t.kind===kindFilter)).map(t=>'<button class="topic-card" data-topic="'+t.id+'" style="text-align:left;width:100%;cursor:pointer"><div class="topic-meta"><span>'+t.grade+'-СЫНЫП · '+(t.kind==='algebra'?'АЛГЕБРА':'ГЕОМЕТРИЯ')+'</span><span>10 ТЕСТ</span></div><h3>'+t.title+'</h3><p>'+t.desc+'</p><div class="topic-open">Тақырыпты оқу және тест ↗</div></button>').join('')}
+document.querySelectorAll('[data-grade]').forEach(b=>b.addEventListener('click',()=>{gradeFilter=b.dataset.grade;document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));render()}));
+document.querySelectorAll('[data-kind]').forEach(b=>b.addEventListener('click',()=>{kindFilter=b.dataset.kind;gradeFilter='all';document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));render()}));
+document.querySelectorAll('[data-kind-link]').forEach(a=>a.addEventListener('click',()=>{kindFilter=a.dataset.kindLink;gradeFilter='all';document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x.dataset.kind===kindFilter));render()}));render();
+const display=document.getElementById('calcDisplay'),calcResult=document.getElementById('calcResult');
+document.querySelectorAll('[data-insert]').forEach(b=>b.addEventListener('click',()=>{display.value+=b.dataset.insert;display.focus()}));
+document.getElementById('clearCalc').onclick=()=>{display.value='';calcResult.textContent='Нәтиже осында көрінеді'};
+function solve(){try{let e=display.value.trim().replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-').replace(/\^/g,'**').replace(/sqrt\(/g,'Math.sqrt(');if(!e||!/^[0-9+*/().\s-]+$/.test(e.replace(/Math\.sqrt/g,'')))throw 0;let v=Function('"use strict";return ('+e+')')();if(!Number.isFinite(v))throw 0;calcResult.textContent='= '+Number(v.toPrecision(10))}catch{calcResult.textContent='Өрнекті тексеріп, қайта енгіз.'}}
+document.getElementById('solveCalc').onclick=solve;display.addEventListener('keydown',e=>{if(e.key==='Enter')solve()});document.getElementById('themeToggle').onclick=()=>document.body.classList.toggle('light');
+const poolAlgebra=[
+['√49 мәнін тап.',['6','7','8','9'],1,'7²=49.'],['x²−9=0 теңдеуінің түбірлері.',['x=3','x=−3','x=±3','түбірі жоқ'],2,'x²=9, сондықтан x=±3.'],['(x+2)(x−2) өрнегін ықшамда.',['x²+4','x²−4','x²−2','x²+2'],1,'Қосынды мен айырым көбейтіндісі: x²−4.'],['2x+5=17 болса, x=?',['5','6','7','11'],1,'2x=12, сондықтан x=6.'],['x²−5x+6=0 теңдеуінің түбірлері.',['1 және 6','−2 және −3','2 және 3','−1 және −6'],2,'(x−2)(x−3)=0.'],['3, 5, 7 сандарының арифметикалық ортасы.',['4','5','6','15'],1,'(3+5+7)/3=5.'],['y=2x+1 функциясында x=3 болса, y=?',['5','6','7','8'],2,'2·3+1=7.'],['2(x−4)=10 теңдеуін шеш.',['1','5','9','14'],2,'x−4=5, демек x=9.'],['4x<20 теңсіздігінің шешімі.',['x<5','x>5','x<16','x>16'],0,'Оң санға бөлгенде белгі өзгермейді.'],['a=2 болса, a³+1 мәні.',['5','7','8','9'],3,'2³+1=9.']];
+const poolGeometry=[
+['Үшбұрыш бұрыштарының қосындысы.',['90°','180°','270°','360°'],1,'Үшбұрыш бұрыштарының қосындысы 180°.'],['Катеттері 3 және 4 болса, гипотенуза.',['5','6','7','12'],0,'√(3²+4²)=5.'],['Қабырғасы 6 шаршының ауданы.',['12','24','30','36'],3,'S=a²=36.'],['Радиусы 5 шеңбердің диаметрі.',['2.5','5','10','25'],2,'d=2r=10.'],['Параллелограммның қарама-қарсы қабырғалары...',['перпендикуляр','тең және параллель','тең емес','параллель емес'],1,'Қарама-қарсы қабырғалары тең және параллель.'],['Тік бұрыш неше градус?',['45°','60°','90°','180°'],2,'Тік бұрыш 90°.'],['Табаны 8, биіктігі 5 үшбұрыштың ауданы.',['13','20','40','80'],1,'S=ah/2=20.'],['Дұрыс алтыбұрыштың қабырғалары саны.',['5','6','7','8'],1,'Алтыбұрышта 6 қабырға бар.'],['sin 30° мәні.',['0','1/2','√2/2','1'],1,'sin 30°=1/2.'],['Шеңбер ұзындығының формуласы.',['πr²','2πr','a²','πd²'],1,'C=2πr.']];
+let current=null,chosen=[],answers={};const modal=document.getElementById('lessonModal'),questions=document.getElementById('questions'),score=document.getElementById('score');
+function buildQuiz(){if(!current)return;let pool=current.kind==='geometry'?poolGeometry:poolAlgebra;chosen=Array.from({length:10},(_,i)=>{let q=pool[(i+current.grade+(current.id.length%pool.length))%pool.length];return {q:q[0],opts:q[1],correct:q[2],why:q[3]}});answers={};questions.innerHTML=chosen.map((q,i)=>'<div class="question"><h3>'+(i+1)+'. '+q.q+'</h3><div class="answers">'+q.opts.map((a,j)=>'<button class="answer" type="button" data-q="'+i+'" data-a="'+j+'">'+String.fromCharCode(65+j)+') '+a+'</button>').join('')+'</div><div class="explanation hidden" id="why'+i+'">'+q.why+'</div></div>').join('');score.textContent=''}
+grid.addEventListener('click',e=>{const b=e.target.closest('[data-topic]');if(!b)return;current=topics.find(t=>t.id===b.dataset.topic);document.getElementById('lessonMeta').textContent=current.grade+'-СЫНЫП · '+(current.kind==='algebra'?'АЛГЕБРА':'ГЕОМЕТРИЯ');document.getElementById('lessonTitle').textContent=current.title;document.getElementById('lessonDesc').textContent=current.desc;document.getElementById('lessonRule').textContent=current.rule;buildQuiz();modal.classList.add('open');document.body.style.overflow='hidden'});
+function closeModal(){modal.classList.remove('open');document.body.style.overflow=''}document.getElementById('closeModal').onclick=closeModal;modal.addEventListener('click',e=>{if(e.target===modal)closeModal()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+questions.addEventListener('click',e=>{let b=e.target.closest('button[data-q]');if(!b)return;let i=+b.dataset.q;answers[i]=+b.dataset.a;questions.querySelectorAll('button[data-q="'+i+'"]').forEach(x=>x.classList.toggle('selected',x===b))});
+document.getElementById('quizForm').addEventListener('submit',e=>{e.preventDefault();let n=0;chosen.forEach((q,i)=>{questions.querySelectorAll('button[data-q="'+i+'"]').forEach((b,j)=>{b.classList.remove('correct','wrong');if(j===q.correct)b.classList.add('correct');if(answers[i]===j&&j!==q.correct)b.classList.add('wrong')});document.getElementById('why'+i).classList.remove('hidden');if(answers[i]===q.correct)n++});score.textContent='Нәтижең: '+n+'/10 — '+(n>=9?'Өте жақсы!':n>=7?'Жақсы нәтиже!':n>=5?'Жақсы, тағы қайталап көр.':'Ережені қайталап, қайта орында.')});
+document.getElementById('retry').onclick=buildQuiz;
+</script></body></html>
