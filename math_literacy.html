@@ -214,6 +214,7 @@
 
       let qText = "";
       let opts = [];
+      let explanation = "";
       let correct = (baseKey[i-1] + vShift) % 4;
 
       if(type === 0){
@@ -223,6 +224,7 @@
         const ans = Math.round(a*(1 - (b*10)/100));
         // 4 нұсқа
         opts = [ans, ans + 2, ans - 3, ans + 5].map(x=>String(x));
+        explanation = `${a} × (1 − ${b*10}/100) = ${ans} теңге. Жеңілдіктен кейінгі бағаны табу үшін бастапқы бағадан жеңілдік үлесін шегереміз.`;
         correct = 0;
       } else if(type === 1){
         const d = (seed % 9) + 2; // 2..10
@@ -230,6 +232,7 @@
         qText = `${i}) Автокөлік ${t} сағатта ${d*30} км жүрді. Орташа жылдамдығы (км/сағ) қанша?`;
         const ans = (d*30)/t;
         opts = [ans, ans+5, ans-3, ans+2].map(x=>String(x));
+        explanation = `${d*30} км ÷ ${t} сағ = ${ans} км/сағ. Орташа жылдамдық жолды уақытқа бөлу арқылы табылады.`;
         correct = 0;
       } else if(type === 2){
         const x = (seed % 20) + 5; // 5..24
@@ -237,6 +240,7 @@
         qText = `${i}) Бір қорапта ${x} қалам, ал екінші қорапта ${y} қалам бар. Екеуінде барлығы неше қалам?`;
         const ans = x+y;
         opts = [ans, ans+1, ans-2, ans+5].map(String);
+        explanation = `${x} + ${y} = ${ans} қалам. Екі қораптағы сандарды қосамыз.`;
         correct = 0;
       } else {
         const p = (seed % 8) + 2; // 2..9
@@ -244,6 +248,7 @@
         qText = `${i}) Егер 1 кг алма ${p*100} тг болса, ${q} кг алма қанша теңге тұрады?`;
         const ans = p*100*q;
         opts = [ans, ans + 100, ans - 200, ans + 300].map(String);
+        explanation = `${p*100} × ${q} = ${ans} теңге. Бір килограмм бағасын килограмм санына көбейтеміз.`;
         correct = 0;
       }
 
@@ -259,7 +264,8 @@
         text: qText,
         options: newOpts,
         correct: newCorrect,
-        answerText: rightVal
+        answerText: rightVal,
+        explanation: explanation
       });
     }
 
@@ -385,7 +391,7 @@
       const fb = document.getElementById(`fb_${i}`);
 
       if(!sel){
-        fb.textContent = showKey ? `Дұрыс: ${String.fromCharCode(65+q.correct)}) ${q.answerText}` : "Жауап таңдалмаған.";
+        fb.textContent = showKey ? `Дұрыс: ${String.fromCharCode(65+q.correct)}) ${q.answerText}. ${q.explanation}` : "Жауап таңдалмаған.";
         fb.className = "hint bad";
         continue;
       }
@@ -393,11 +399,11 @@
       const chosen = Number(sel.value);
       if(chosen === q.correct){
         score++;
-        fb.textContent = showKey ? `Дұрыс! (${String.fromCharCode(65+q.correct)})` : "Дұрыс!";
+        fb.textContent = showKey ? `Дұрыс! (${String.fromCharCode(65+q.correct)}). ${q.explanation}` : "Дұрыс!";
         fb.className = "hint good";
       }else{
         fb.textContent = showKey
-          ? `Қате. Дұрыс: ${String.fromCharCode(65+q.correct)}) ${q.answerText}`
+          ? `Қате. Дұрыс: ${String.fromCharCode(65+q.correct)}) ${q.answerText}. ${q.explanation}`
           : "Қате.";
         fb.className = "hint bad";
       }
