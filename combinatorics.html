@@ -662,7 +662,7 @@
         }
         if(Number(selected.value) === q.correct){
           score++;
-          fb.textContent = "Дұрыс!";
+          fb.textContent = "Дұрыс! " + q.explain;
           fb.className = 'small-feedback correct';
         } else {
           fb.textContent = "Қате. " + q.explain;
