@@ -54,3 +54,80 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
  .slideViewport{width:calc(100% - 76px)!important}
 }
 @media(prefers-reduced-motion:reduce){body::before{animation:none}}
+
+
+/* ── Signature redesign: luminous math studio ── */
+:root{--mb-accent:#695cff;--mb-accent-2:#22d3c5;--mb-glass:rgba(255,255,255,.78)}
+body{background:radial-gradient(ellipse at 8% 4%,#d8f7ff 0,transparent 35%),radial-gradient(ellipse at 95% 10%,#e9dcff 0,transparent 32%),radial-gradient(ellipse at 48% 90%,#ffe4f1 0,transparent 38%),linear-gradient(135deg,#f7fbff,#f9f5ff 55%,#f5fbff)!important;color:#19213b}
+body::before{display:none!important}
+#mb-math-canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.78}
+.container{z-index:2!important}
+header,.hero,.panel,.boardWrap,.slide,.gcard,.mb-learning-card,.mb-daily-challenge{
+ background:rgba(255,255,255,.78)!important;
+ border:1px solid rgba(116,126,180,.17)!important;
+ box-shadow:0 16px 48px rgba(52,65,135,.09),inset 0 1px 0 rgba(255,255,255,.88)!important;
+ backdrop-filter:blur(18px);border-radius:22px!important
+}
+header{padding:14px 18px!important}
+.hero{padding:clamp(26px,4vw,52px)!important;overflow:hidden}
+.hero::after{content:"∑";position:absolute;right:3%;top:-35%;font-size:clamp(130px,22vw,300px);font-weight:900;color:rgba(105,92,255,.045);pointer-events:none}
+.wideTitle{font-size:clamp(30px,4.3vw,54px)!important;letter-spacing:-.045em;line-height:1.08!important}
+.wideSubtitle{font-size:clamp(14px,1.5vw,17px)!important;line-height:1.7}
+.logo{border-radius:16px!important;color:white!important;background:linear-gradient(135deg,#16c9df,#6758f5)!important;box-shadow:0 10px 24px #6558f52b}
+.btn,.navBtn,.tool{border-radius:13px!important}
+.btn.primary{color:white!important;background:linear-gradient(135deg,#6558f5,#a34de5)!important}
+.slide{min-height:106px;align-items:center!important;transition:transform .24s,box-shadow .24s!important}
+.slide:hover,.gcard:hover{transform:translateY(-5px)!important;box-shadow:0 22px 45px rgba(82,75,160,.15)!important}
+.layout{gap:18px!important}
+.panel,.boardWrap{padding:18px!important}
+.form-item{border-radius:14px!important;background:rgba(247,248,255,.82)!important;border:1px solid rgba(112,120,180,.1)!important}
+.form-item .expr{color:#6558f5!important;overflow-wrap:anywhere}
+canvas{background:rgba(255,255,255,.7)!important;border:1px solid rgba(112,120,180,.18)!important}
+.gcard{padding:16px!important}
+.mb-theme-toggle{right:18px;bottom:18px;background:linear-gradient(135deg,#6558f5,#9b50e8)!important;box-shadow:0 12px 28px #6558f53b!important}
+.mb-learning-hub{position:relative;z-index:3;margin-top:22px;padding:clamp(18px,3vw,32px);border:1px solid rgba(116,126,180,.15);border-radius:26px;background:rgba(255,255,255,.6);backdrop-filter:blur(16px);box-shadow:0 18px 50px rgba(52,65,135,.06)}
+.mb-section-heading{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:20px}
+.mb-section-heading h2{margin:7px 0 6px;font-size:clamp(25px,3vw,36px);letter-spacing:-.04em;color:#19213b}
+.mb-section-heading p,.mb-learning-card p{color:#69728c;line-height:1.6;margin:0}
+.mb-eyebrow{font-size:11px;font-weight:900;letter-spacing:.16em;color:#6558f5}
+.mb-heading-orbit{width:72px;height:72px;border-radius:23px;display:grid;place-items:center;background:linear-gradient(135deg,#e3fbff,#eee8ff);font-size:40px;font-weight:900;color:#6558f5;transform:rotate(8deg);flex-shrink:0}
+.mb-learning-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.mb-learning-card{padding:20px!important;text-decoration:none!important;color:#19213b!important;display:flex;flex-direction:column;min-height:245px;transition:transform .22s,box-shadow .22s!important}
+.mb-learning-card:hover{transform:translateY(-6px)!important;box-shadow:0 24px 45px rgba(66,70,145,.16)!important}
+.mb-card-icon{width:54px;height:54px;border-radius:17px;display:grid;place-items:center;font-size:21px;font-weight:900;margin-bottom:19px;color:white;background:linear-gradient(135deg,#6558f5,#9d5be8)}
+.mb-card-label{font-size:10px;font-weight:900;letter-spacing:.13em;color:#6558f5;margin-bottom:7px}
+.mb-learning-card h3{font-size:18px;line-height:1.25;margin:0 0 9px;letter-spacing:-.025em}
+.mb-learning-card p{font-size:13px}
+.mb-card-link{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:18px;font-size:13px;font-weight:850;color:#6558f5}
+.mb-card-link b{font-size:20px}
+.mb-card-blue .mb-card-icon{background:linear-gradient(135deg,#2699ee,#6558f5)}
+.mb-card-mint .mb-card-icon{background:linear-gradient(135deg,#08bba5,#36c6df)}
+.mb-card-orange .mb-card-icon{background:linear-gradient(135deg,#ff9b54,#ed5d9e)}
+.mb-daily-challenge{margin-top:16px;padding:20px;display:flex;align-items:center;gap:16px}
+.mb-challenge-mark{width:52px;height:52px;border-radius:17px;display:grid;place-items:center;background:#f0edff;color:#6558f5;font-size:29px;font-weight:900;flex-shrink:0}
+.mb-challenge-copy{flex:1}
+.mb-challenge-copy h3{margin:5px 0;font-size:20px;color:#19213b}
+.mb-challenge-copy p{margin:5px 0;color:#555f7b;font-size:18px;font-weight:800;letter-spacing:.04em}
+.mb-challenge-answer{margin-top:9px;padding:10px 12px;border-radius:12px;background:#e9fbf4;color:#176b54;font-size:14px}
+.mb-challenge-button{border:0;border-radius:13px;padding:13px 16px;background:linear-gradient(135deg,#6558f5,#9254e8);color:#fff;font-weight:800;cursor:pointer;white-space:nowrap}
+.mb-challenge-button span{margin-left:8px}
+.mb-notify-button{position:fixed;right:20px;top:20px;z-index:10000;width:46px;height:46px;border:1px solid #ffffffbd;border-radius:16px;background:rgba(255,255,255,.88);color:#6558f5;box-shadow:0 10px 30px #353f7920;backdrop-filter:blur(14px);font-size:20px;cursor:pointer}
+.mb-notify-dot{position:absolute;right:7px;top:6px;width:8px;height:8px;border-radius:50%;background:#ff5d8f;border:2px solid white}
+.mb-notify-panel{position:fixed;right:20px;top:76px;z-index:10001;width:min(360px,calc(100vw - 28px));padding:18px;border-radius:20px;background:rgba(255,255,255,.97);border:1px solid #dfe2f2;box-shadow:0 24px 70px #29315b2b;color:#19213b;backdrop-filter:blur(20px)}
+.mb-notify-panel[hidden]{display:none}
+.mb-notify-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}
+.mb-notify-top h3{margin:0;font-size:18px}
+.mb-notify-close{border:0;background:#f0efff;color:#6558f5;border-radius:10px;padding:6px 10px;cursor:pointer}
+.mb-notice{padding:13px 0;border-top:1px solid #eceefa}
+.mb-notice strong{display:block;font-size:14px;margin-bottom:4px}
+.mb-notice p{margin:0;color:#69728c;font-size:13px;line-height:1.5}
+.mb-notice time{display:block;color:#8a91a8;font-size:11px;margin-top:7px}
+@media(max-width:1050px){.mb-learning-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.layout{grid-template-columns:1fr!important}}
+@media(max-width:620px){.mb-learning-grid{grid-template-columns:1fr}.mb-learning-card{min-height:205px}.mb-daily-challenge{align-items:flex-start;flex-wrap:wrap}.mb-challenge-copy{min-width:calc(100% - 72px)}.mb-challenge-button{width:100%}.mb-notify-button{right:12px;top:12px}.mb-section-heading{align-items:flex-start}.mb-heading-orbit{width:52px;height:52px;font-size:29px}.hero{padding-top:32px!important}}
+html.mb-dark body{background:radial-gradient(ellipse at 10% 5%,#182a4b,transparent 35%),radial-gradient(ellipse at 90% 10%,#30204d,transparent 33%),linear-gradient(135deg,#0c1224,#151329)!important;color:#f3f4ff}
+html.mb-dark :is(header,.hero,.panel,.boardWrap,.slide,.gcard,.mb-learning-hub,.mb-learning-card,.mb-daily-challenge){background:rgba(23,29,53,.83)!important;border-color:#4a4f78!important;color:#f3f4ff!important}
+html.mb-dark .mb-section-heading h2,html.mb-dark .mb-learning-card h3,html.mb-dark .mb-challenge-copy h3{color:#f3f4ff}
+html.mb-dark .mb-learning-card p,html.mb-dark .mb-section-heading p{color:#b8bfd9}
+html.mb-dark .mb-notify-panel{background:#171d35;color:#f3f4ff;border-color:#41496a}
+html.mb-dark .mb-notice{border-color:#353d5e}
+@media(prefers-reduced-motion:reduce){#mb-math-canvas{display:none}}
